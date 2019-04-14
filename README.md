@@ -16,11 +16,11 @@
 
 ##### Additional Items to Code
 
-- [ ] Create another subroutine for doubles. Find a way to pass the complete singles array into the doubles subroutine so that it reads it as IDet = 1.
+- [ ] Create another subroutine for doubles. Find a way to pass the complete singles array into the doubles subroutine so that it reads it as IDet = 1. (Not Done)
 
 #### Phase 3 | Form Integrals Based on SC Rules
 
-- [ ] XOR : Check for differences in orbital occupations.
+- [ ] XOR : Check for differences in orbital occupations. (Not Done)
 
   .
 
