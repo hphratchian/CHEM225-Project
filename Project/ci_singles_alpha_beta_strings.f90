@@ -12,11 +12,27 @@
   ! Last Updated 4/11/19
 
   implicit none
-  integer :: nAlpha = 3, nBeta = 6, nBasis = 8
   integer :: iDet = 2
   integer :: nDet, nOccBeta, nOccAlpha
   integer :: nVirtAlpha, nVirtBeta
   integer, dimension(:,:,:), allocatable :: iStrings
+  
+  !The following reads command line input into the variables: nAlpha,
+  !nBeta, and nBasis.
+ 
+  integer, parameter :: maximum_integer_digits = 999 !input restriction
+  integer :: nAlpha, nBeta, nBasis      
+  character(maximum_integer_digits) :: nA, nB, nBas !dummy input strings
+        
+  call get_command_argument(1, nA) !separate each by a space in CLI
+  call get_command_argument(2, nB)
+  call get_command_argument(3, nBas)
+
+  read (nA, *) nAlpha
+  read (nB, *) nBeta
+  read (nBas, *) nBasis
+
+  !Define O/V orbitals and total number of singles determinants.
 
   nVirtAlpha = nBasis - nAlpha
   nVirtBeta = nBasis - nBeta
@@ -30,14 +46,12 @@
   !functions to be greater than the number of alpha or beta
   !electrons
   !
-  !if (nBasis .le. max(nAlpha, nBeta)) then
-  !  write(*,*) ' The number of basis functions must be greater ', &
-  !             'than the number of alpha or beta electrons.'
-  !  stop
-  !endif
-  !
-
-
+  if (nBasis .le. max(nAlpha, nBeta)) then
+    write(*,*) ' The number of basis functions must be greater ', &
+               'than the number of alpha or beta electrons.'
+    stop
+  endif
+  
   !We pass the program's declared variables into the subroutine
   !called stringAlphaBeta.
   !
@@ -54,15 +68,15 @@
   integer :: NOccBeta, NOccAlpha, IA, NDet
   integer, dimension(:,:,:), allocatable :: IStrings
 
-  NOccAlpha = NAlpha !define number of alpha occupied MOs
-  NOccBeta = NBeta !define number of beta occupied MOs
+  NOccAlpha = NAlpha !redefine number of alpha occupied MOs
+  NOccBeta = NBeta !redefine number of beta occupied MOs
 
   allocate(IStrings(NBasis,2,NDet)) ! Spin index is 2 long
   !
   !Below, we provide a reference for the alpha and beta string
   !determinants. Our loops for changing the orbital occupation
   !number will then start after IDet = 1.
-
+  !
   !Give reference for alpha string
   do II = 1, NOccAlpha
     do IA = NOccAlpha + 1, NBasis
