@@ -30,7 +30,7 @@ Compile using: pgfortran -i8 -o filename.exe filename.f90
 - [ ] XOR : Check for differences in orbital occupations. (Not Done/In Progress)
 - not done bitwise, using integer strings
 
-#### Phase 3 | Solve S^2 Matrix elements Using MO overlap Matrices
+#### Phase 4 | Solve S^2 Matrix elements Using MO overlap Matrices
   .
 
   .
