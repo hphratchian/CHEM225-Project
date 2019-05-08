@@ -16,7 +16,7 @@
 
 ##### Additional Items to Code
 
-- [x] Create another subroutine for doubles. Find a way to pass the complete singles array into the doubles subroutine so that it reads it as IDet = 1. (Done 5/7/19)
+- [x] Create another subroutine for doubles. (Done 5/7/19)
 
 Compile using: pgfortran -i8 -o filename.exe filename.f90
 
