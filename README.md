@@ -1,6 +1,6 @@
 # CHEM225-Project
 
-### Updated 5/8/19 
+### Updated 5/22/19 
 
 
 
@@ -28,13 +28,13 @@ Compile using: pgfortran -i8 -o filename.exe filename.f90
 #### Phase 3 | Form Integrals Based on SC Rules
 
 - [ ] Pass IStrings : Find a way to form all combinations of possible matrix elements using the reference, singles, and doubles determinants. Figure out how to pass the Istrings array from singles and doubles subroutines into allocatable arrays defined in the program. Loop over all iDet. (Not Done/In Progress)
-- [ ] XOR : Check for differences in orbital occupations. Not done bitwise, using integer strings. (Not Done/In Progress)
-- [ ] Spin Symmetry : Spin blocks and spin flips
+- [ ] XOR : Check for differences in orbital occupations. Not done bitwise, using integer strings. (Not Done)
+- [ ] Spin Symmetry : Consider spin blocks and spin flips.(Not Done)
 #### Phase 4 | Solve S^2 Matrix elements Using MO overlap Matrices
 
-- [ ] Generate MO coefficients and get overlaps. Compute using Gaussian--H2 minimal basis @ 2 Å (Not Done)
-- [ ] Get nAlpha, nBeta, nBasis, and form overlaps to solve S^2 matrix elements
-- [ ] Diagonalize and get S^2 expectation values.
+- [ ] Generate MO coefficients and get overlaps. Compute using Gaussian--H2 minimal basis @ 2 Å. (Not Done)
+- [ ] Get nAlpha, nBeta, nBasis, and form overlaps to solve S^2 matrix elements. (Not Done)
+- [ ] Diagonalize and get S^2 expectation values. (Not Done)
 
 #### Phase 5 | Create Spin Projector
   .
