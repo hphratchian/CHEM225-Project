@@ -27,10 +27,16 @@ Compile using: pgfortran -i8 -o filename.exe filename.f90
 
 #### Phase 3 | Form Integrals Based on SC Rules
 
-- [ ] XOR : Check for differences in orbital occupations. (Not Done/In Progress)
-- not done bitwise, using integer strings
-
+- [ ] Pass IStrings : Find a way to form all combinations of possible matrix elements using the reference, singles, and doubles determinants. Figure out how to pass the Istrings array from singles and doubles subroutines into allocatable arrays defined in the program. Loop over all iDet. (Not Done/In Progress)
+- [ ] XOR : Check for differences in orbital occupations. Not done bitwise, using integer strings. (Not Done/In Progress)
+- [ ] Spin Symmetry : Spin blocks and spin flips
 #### Phase 4 | Solve S^2 Matrix elements Using MO overlap Matrices
+
+-[ ] Generate MO coefficients and get overlaps. Compute using Gaussian--H2 minimal basis @ 2 Å (Not Done)
+-[ ] Get nAlpha, nBeta, nBasis, and form overlaps to solve $S^2$ matrix elements
+-[ ] Diagonalize and get $\langle S^2 \rangle$ values.
+
+#### Phase 5 | Create Spin Projector
   .
 
   .
