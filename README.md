@@ -33,8 +33,8 @@ Compile using: pgfortran -i8 -o filename.exe filename.f90
 #### Phase 4 | Solve S^2 Matrix elements Using MO overlap Matrices
 
 -[ ] Generate MO coefficients and get overlaps. Compute using Gaussian--H2 minimal basis @ 2 Å (Not Done)
--[ ] Get nAlpha, nBeta, nBasis, and form overlaps to solve $S^2$ matrix elements
--[ ] Diagonalize and get $\langle S^2 \rangle$ values.
+-[ ] Get nAlpha, nBeta, nBasis, and form overlaps to solve S^2 matrix elements
+-[ ] Diagonalize and get S^2 expectation values.
 
 #### Phase 5 | Create Spin Projector
   .
