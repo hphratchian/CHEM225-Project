@@ -51,89 +51,97 @@
                'than the number of alpha or beta electrons.'
     stop
   endif
-  
-  !We pass the program's declared variables into the subroutine
-  !called stringAlphaBeta.
-  !
-  call stringAlphaBeta(nAlpha, nBeta, nBasis, nOccAlpha, nOccBeta, &
-  iDet, nDet)
+ 
+!
+!     Allocate memory.
+!
+      allocate(IStrings(NBasis,2,NDet)) ! Spin index is 2 long
+!
+!     We pass the program's declared variables into the subroutine called
+!     stringAlphaBeta.
+!
+      call stringAlphaBeta(nAlpha,nBeta,nBasis,nOccAlpha,nOccBeta,  &
+        iDet,nDet)
+!
+      end program CI_Singles
 
-  end program CI_Singles
 
-  subroutine stringAlphaBeta(NAlpha, NBeta, NBasis, NOccAlpha, &
-  NOccBeta, IDet, NDet)
-
-  implicit none
-  integer :: NAlpha, NBeta, NBasis, II, IDet
-  integer :: NOccBeta, NOccAlpha, IA, NDet
-  integer, dimension(:,:,:), allocatable :: IStrings
-
-  NOccAlpha = NAlpha !redefine number of alpha occupied MOs
-  NOccBeta = NBeta !redefine number of beta occupied MOs
-
-  allocate(IStrings(NBasis,2,NDet)) ! Spin index is 2 long
-  !
-  !Below, we provide a reference for the alpha and beta string
-  !determinants. Our loops for changing the orbital occupation
-  !number will then start after IDet = 1.
-  !
-  !Give reference for alpha string
-  do II = 1, NOccAlpha
-    do IA = NOccAlpha + 1, NBasis
-       IStrings(II,1,1) = 1
-       IStrings(IA,1,1) = 0
-    enddo
-  enddo
-
-  !Give reference for beta string
-  do II = 1, NOccBeta
-    do IA = NOccBeta + 1, NBasis
-       IStrings(II,2,1) = 1
-       IStrings(IA,2,1) = 0
-    enddo
-  enddo
-  !
-  !IDet starts at 2 because we skip the reference state
-  !
-  do II = 1, NOccAlpha !starting from orbital 1-2
-    do IA = NOccAlpha + 1, NBasis !starting from orbital 3-4
-      IStrings(:,:,IDet) = IStrings(:,:,1) !open array indices
-      IStrings(II,1,IDet) = 0
-      IStrings(IA,1,IDet) = 1
-
-      IDet = IDet + 1 !We loop over states starting at IDet = 1
-
-    enddo
-  enddo
-
-  do II = 1, NOccBeta !starting from orbital 1-2
-    do IA = NOccBeta + 1, NBasis !starting from orbital 3-4
-      IStrings(:,:,IDet) = IStrings(:,:,1) !open array indices
-      IStrings(II,2,IDet) = 0
-      IStrings(IA,2,IDet) = 1
-
-      IDet = IDet + 1 !We loop over states starting at IDet = 1
-
-    enddo
-  enddo
-  !
-  !Format the output by placing every array containing the alpha and
-  !beta strings on a new line with a space between them. This format should be
-  !recoded for generality.   
-  !
+      subroutine stringAlphaBeta(NAlpha,NBeta,NBasis,NOccAlpha,  &
+        NOccBeta,IDet,NDet,Strings)
+!
+!     This subroutine builds a list of strings corresponding to singles
+!     substitutions. The reference string is taken to be in IStrings(1,1,1).
+!
+      implicit none
+      integer :: NAlpha, NBeta, NBasis, II, IDet
+      integer :: NOccBeta, NOccAlpha, IA, NDet
+      integer, dimension(:,:,:), allocatable :: IStrings
+!
+!     Format statements.
+!
  1000 format(/,1x,(i1),(i1)) !New line after each 2*NBasis-long string.
-  !
-  write(*,*)
-  do IDet = 1, NDet
-    write(*,1000,advance='no') IStrings(:,:,IDet)
-  enddo
-  write(*,*)
-  end subroutine stringAlphaBeta
-  !
-  !Can we use a variable as a format parameter? Truncate alpha digits by NBasis? 
-  !This code can be modified to push the singles array into a doubles subroutine
-  !as a reference. All doubles substitutions can then be printed out from that
-  !second subroutine. This requires careful tracking of our declared variables.
-  !
-  !
-
+!
+!
+!     Redefine variables for the number of alpha and beta occupied MOs. (I'm not
+!     sure this needs to be done here.?)
+!
+      NOccAlpha = NAlpha !redefine number of alpha occupied MOs
+      NOccBeta = NBeta !redefine number of beta occupied MOs
+!
+!     Below, we provide a reference for the alpha and beta string
+!     determinants. Our loops for changing the orbital occupation number will
+!     then start after IDet = 1.
+!
+!     Give reference for alpha string
+      do II = 1, NOccAlpha
+        do IA = NOccAlpha + 1, NBasis
+          IStrings(II,1,1) = 1
+          IStrings(IA,1,1) = 0
+        endDo
+      endDo
+!
+!     Give reference for beta string
+      do II = 1, NOccBeta
+        do IA = NOccBeta + 1, NBasis
+          IStrings(II,2,1) = 1
+          IStrings(IA,2,1) = 0
+        endDo
+      endDo
+!
+!     IDet starts at 2 because we skip the reference state
+!
+      do II = 1, NOccAlpha !starting from orbital 1-2
+        do IA = NOccAlpha + 1, NBasis !starting from orbital 3-4
+          IStrings(:,:,IDet) = IStrings(:,:,1) !open array indices
+          IStrings(II,1,IDet) = 0
+          IStrings(IA,1,IDet) = 1
+          IDet = IDet + 1 !We loop over states starting at IDet = 1
+        endDo
+      endDo
+      do II = 1, NOccBeta !starting from orbital 1-2
+        do IA = NOccBeta + 1, NBasis !starting from orbital 3-4
+          IStrings(:,:,IDet) = IStrings(:,:,1) !open array indices
+          IStrings(II,2,IDet) = 0
+          IStrings(IA,2,IDet) = 1
+          IDet = IDet + 1 !We loop over states starting at IDet = 1
+        enddo
+      enddo
+!
+!     Format the output by placing every array containing the alpha and beta
+!     strings on a new line with a space between them. This format should be
+!     recoded for generality.   
+!
+      write(*,*)
+      do IDet = 1, NDet
+        write(*,1000,advance='no') IStrings(:,:,IDet)
+      endDo
+      write(*,*)
+      end subroutine stringAlphaBeta
+!
+!     Can we use a variable as a format parameter? Truncate alpha digits by
+!     NBasis? This code can be modified to push the singles array into a doubles
+!     subroutine as a reference. All doubles substitutions can then be printed
+!     out from that second subroutine. This requires careful tracking of our
+!     declared variables.
+!
+!
