@@ -1,57 +1,53 @@
-  Program CI_Singles
-  !
-  ! This program constructs all Sz-conserving singles substitutions.
-  !
-  ! The singles excitations are formatted as strings using the number of
-  ! alpha electrons, the number of beta electrons, and the number of basis
-  ! functions. Additionally, the output will be compared with the expected
-  ! number of i-->a substituted determinants.
-  !
-  ! A.Zamani
-  !
-  ! Last Updated 4/13/19
+      Program CI_Singles
+!
+!     This program constructs all Sz-conserving singles substitutions.
+!
+!     The singles excitations are formatted as strings using the number of alpha
+!     electrons, the number of beta electrons, and the number of basis
+!     functions. Additionally, the output will be compared with the expected
+!     number of i-->a substituted determinants.
+!
+!     A.Zamani
+!
+!     Last Updated 4/13/19
 
-  implicit none
-  integer :: iDet = 2
-  integer :: nDet, nOccBeta, nOccAlpha
-  integer :: nVirtAlpha, nVirtBeta
-  integer, dimension(:,:,:), allocatable :: iStrings
-  
-  !The following reads command line input into the variables: nAlpha,
-  !nBeta, and nBasis.
- 
-  integer, parameter :: maximum_integer_digits = 999 !input restriction
-  integer :: nAlpha, nBeta, nBasis      
-  character(maximum_integer_digits) :: nA, nB, nBas !dummy input strings
-        
-  call get_command_argument(1, nA) !separate each by a space in CLI
-  call get_command_argument(2, nB)
-  call get_command_argument(3, nBas)
+      implicit none
+      integer :: iDet = 2
+      integer :: nDet, nOccBeta, nOccAlpha
+      integer :: nVirtAlpha, nVirtBeta
+      integer, dimension(:,:,:), allocatable :: IStrings
+      integer, parameter :: maximum_integer_digits = 999 !input restriction
+      integer :: nAlpha, nBeta, nBasis      
+      character(maximum_integer_digits) :: nA, nB, nBas !dummy input strings
+!
+!     The following reads command line input into the variables: nAlpha, nBeta,
+!     and nBasis.
+! 
+!        
+      call get_command_argument(1, nA) !separate each by a space in CLI
+      call get_command_argument(2, nB)
+      call get_command_argument(3, nBas)
+      read (nA, *) nAlpha
+      read (nB, *) nBeta
+      read (nBas, *) nBasis
+!
+!     Define O/V orbitals and total number of singles determinants.
+!
+      nVirtAlpha = nBasis - nAlpha
+      nVirtBeta = nBasis - nBeta
+      nOccAlpha = nAlpha
+      nOccBeta = nBeta
+      nDet = ((nOccAlpha*nVirtAlpha)+(nOccBeta*nVirtBeta) + 1)
 
-  read (nA, *) nAlpha
-  read (nB, *) nBeta
-  read (nBas, *) nBasis
-
-  !Define O/V orbitals and total number of singles determinants.
-
-  nVirtAlpha = nBasis - nAlpha
-  nVirtBeta = nBasis - nBeta
-  nOccAlpha = nAlpha
-  nOccBeta = nBeta
-
-  nDet = ((nOccAlpha*nVirtAlpha)+(nOccBeta*nVirtBeta) + 1)
-
-  !
-  !Below is a conditional that requires the number of basis
-  !functions to be greater than the number of alpha or beta
-  !electrons
-  !
-  if (nBasis .le. max(nAlpha, nBeta)) then
-    write(*,*) ' The number of basis functions must be greater ', &
-               'than the number of alpha or beta electrons.'
-    stop
-  endif
- 
+!
+!     Below is a conditional that requires the number of basis functions to be
+!     greater than the number of alpha or beta electrons
+!
+      if (nBasis .le. max(nAlpha, nBeta)) then
+        write(*,*) ' The number of basis functions must be greater ', &
+          'than the number of alpha or beta electrons.'
+        stop
+      endif
 !
 !     Allocate memory.
 !
@@ -60,37 +56,29 @@
 !     We pass the program's declared variables into the subroutine called
 !     stringAlphaBeta.
 !
-      call stringAlphaBeta(nAlpha,nBeta,nBasis,nOccAlpha,nOccBeta,  &
-        iDet,nDet)
+      call stringAlphaBeta(nOccAlpha,nOccBeta,nBasis,iDet,nDet,IStrings)
 !
       end program CI_Singles
 
 
-      subroutine stringAlphaBeta(NAlpha,NBeta,NBasis,NOccAlpha,  &
-        NOccBeta,IDet,NDet,Strings)
+      subroutine stringAlphaBeta(NOccAlpha,NOccBeta,NBasis,IDet,NDet,IStrings)
 !
 !     This subroutine builds a list of strings corresponding to singles
 !     substitutions. The reference string is taken to be in IStrings(1,1,1).
 !
       implicit none
-      integer :: NAlpha, NBeta, NBasis, II, IDet
-      integer :: NOccBeta, NOccAlpha, IA, NDet
-      integer, dimension(:,:,:), allocatable :: IStrings
+      integer,intent(in)::NBasis,NOccAlpha,NOccBeta,NDet
+      integer,intent(inOut)::IDet
+      integer,dimension(NBasis,2,*),intent(inOut)::IStrings
+      integer::IA,II
 !
 !     Format statements.
 !
- 1000 format(/,1x,(i1),(i1)) !New line after each 2*NBasis-long string.
+ 1000 format(/,' |',i3,' > :  ',(i1))
+ 1010 format(' | ',(i1))
 !
 !
-!     Redefine variables for the number of alpha and beta occupied MOs. (I'm not
-!     sure this needs to be done here.?)
-!
-      NOccAlpha = NAlpha !redefine number of alpha occupied MOs
-      NOccBeta = NBeta !redefine number of beta occupied MOs
-!
-!     Below, we provide a reference for the alpha and beta string
-!     determinants. Our loops for changing the orbital occupation number will
-!     then start after IDet = 1.
+!     Below, we provide a reference for the alpha and beta string determinants.
 !
 !     Give reference for alpha string
       do II = 1, NOccAlpha
@@ -133,10 +121,16 @@
 !
       write(*,*)
       do IDet = 1, NDet
-        write(*,1000,advance='no') IStrings(:,:,IDet)
+        write(*,1000,advance='no') IDet,IStrings(:,1,IDet)
+        write(*,1010,advance='no') IStrings(:,2,IDet)
       endDo
       write(*,*)
+!
+      return
       end subroutine stringAlphaBeta
+
+
+
 !
 !     Can we use a variable as a format parameter? Truncate alpha digits by
 !     NBasis? This code can be modified to push the singles array into a doubles
@@ -145,3 +139,12 @@
 !     declared variables.
 !
 !
+
+      subroutine hphTest(NBasis,IString1,IString2)
+!
+      implicit none
+      integer::NBasis
+      integer,dimension(NBasis,2)::IString1,IString2
+
+      return
+      end subroutine hphTest
