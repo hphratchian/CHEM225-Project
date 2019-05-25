@@ -60,6 +60,13 @@
       call stringAlphaBeta(IOut,nOccAlpha,nOccBeta,nBasis,iDet,nDet,  &
         IStrings)
 !
+!     Try out the test code to build routines that characterize the
+!     difference(s) between pairs of strings.
+!
+      Write(IOut,*)
+      Write(IOut,*)' Sending test code strings 3 and 7...'
+      call hphTest(IOut,NBasis,IStrings(:,:,3),IStrings(:,:,7))
+!
       end program CI_Singles
 
 
@@ -173,17 +180,86 @@
       end subroutine printUnrestrictedString
 
 
-      subroutine hphTest(NBasis,IString1,IString2)
+      subroutine die(IOut,message)
+!
+!     This subroutine is called to kill the program after printing our an error
+!     message.
+!
+      integer,intent(in)::IOut
+      character(Len=512),intent(in)::message
+!
+ 1000 Format(/,1x,A,/,/,1x,'The program has FAILED!')
+!
+      write(IOut,1000) TRIM(message)
+      STOP
+!
+      return
+      end subroutine die
+
+
+      subroutine hphTest(IOut,NBasis,IString1,IString2)
 !
       implicit none
-      integer::NBasis
-      integer,dimension(NBasis,2)::IString1,IString2
+      integer,intent(in)::IOut,NBasis
+      integer,dimension(NBasis,2),intent(in)::IString1,IString2
+      integer::i,nElChange,nTotCreationAlpha,nTotAnnihilationAlpha,  &
+        nTotCreationBeta,nTotAnnihilationBeta,nTotCreation,  &
+        nTotAnnihilation
+      integer,dimension(:,:),allocatable::IStringDiff,creationOp,  &
+        annihilationOp
+!
+ 1000 Format(1x,'Enter test code...',/,3x,'Here are the two strings sent here:')
+ 1100 Format(1x,'Here is the creation operator...')
+ 1110 Format(1x,'Here is the annihilation operator...')
+ 1200 Format(1x,'Number of ALPHA creation/annihilation pairs: ',I5,/,  &
+        1x,'Number of BETA  creation/annihilation pairs: ',I5,/,  &
+        1x,'Number of TOTAL creation/annihilation pairs: ',I5)
 !
 !     Report what we're testing in this particular call to the test subroutine
 !     and then figure out some critical info about how these two determinants
 !     relate to one another.
 !
-
+      write(IOut,1000)
+      call printUnrestrictedString(IOut,NBasis,-1,IString1)
+      call printUnrestrictedString(IOut,NBasis,-1,IString2)
+!
+!     Build IStringDiff and print it.
+!
+      Allocate(IStringDiff(Nbasis,2),creationOp(Nbasis,2),  &
+        annihilationOp(Nbasis,2))
+      IStringDiff    = IString2-IString1
+      creationOp     = 0
+      annihilationOp = 0
+      do i = 1,NBasis
+        select case(IStringDiff(i,1))
+        case(-1)
+          annihilationOp(i,1) = 1
+        case(1)
+          creationOp(i,1) = 1
+        end select
+      endDo
+      do i = 1,NBasis
+        select case(IStringDiff(i,2))
+        case(-1)
+          annihilationOp(i,1) = 1
+        case(1)
+          creationOp(i,1) = 1
+        end select
+      endDo
+      write(IOut,1100)
+      call printUnrestrictedString(IOut,NBasis,-1,creationOp)
+      write(IOut,1110)
+      call printUnrestrictedString(IOut,NBasis,-1,annihilationOp)
+      nTotCreationAlpha = SUM(creationOp(:,1))
+      nTotAnnihilationAlpha = SUM(annihilationOp(:,1))
+      nTotCreationBeta = SUM(creationOp(:,2))
+      nTotAnnihilationBeta = SUM(annihilationOp(:,2))
+      nTotCreation = SUM(creationOp)
+      nTotAnnihilation = SUM(annihilationOp)
+      if(nTotCreation.ne.nTotAnnihilation) call die(IOut,  &
+        'hphTest: nTotCreation.ne.nTotAnnihilation')
+      write(IOut,1200) nTotCreationAlpha,nTotCreationBeta,nTotCreation
+!
       return
       end subroutine hphTest
 
