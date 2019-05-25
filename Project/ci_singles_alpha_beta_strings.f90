@@ -13,13 +13,20 @@
 
       implicit none
       integer,parameter::IOut=6
-      integer :: iDet = 2
-      integer :: nDet, nOccBeta, nOccAlpha
-      integer :: nVirtAlpha, nVirtBeta
-      integer, dimension(:,:,:), allocatable :: IStrings
-      integer, parameter :: maximum_integer_digits = 999 !input restriction
-      integer :: nAlpha, nBeta, nBasis      
-      character(maximum_integer_digits) :: nA, nB, nBas !dummy input strings
+      integer::iDet = 2
+      integer::nDet,nOccBeta,nOccAlpha
+      integer::nVirtAlpha,nVirtBeta,nCAPairs,nCAPairsAlpha,nCAPairsBeta,  &
+        nSpinFlip
+      integer,dimension(:,:,:),allocatable::IStrings
+      integer,parameter::maximum_integer_digits = 999 !input restriction
+      integer::nAlpha,nBeta,nBasis      
+      character(maximum_integer_digits)::nA,nB,nBas !dummy input strings
+!
+ 8000 Format(1x,'Number of ALPHA creation/annihilation pairs: ',I5,/,  &
+        1x,'Number of BETA  creation/annihilation pairs: ',I5,/,  &
+        1x,'Number of TOTAL creation/annihilation pairs: ',I5,/,  &
+        1x,'Number of SPIN FLIP pairs                  : ',I5)
+!
 !
 !     The following reads command line input into the variables: nAlpha, nBeta,
 !     and nBasis.
@@ -65,7 +72,9 @@
 !
       Write(IOut,*)
       Write(IOut,*)' Sending test code strings 3 and 7...'
-      call hphTest(IOut,NBasis,IStrings(:,:,3),IStrings(:,:,7))
+      call hphTest(IOut,NBasis,IStrings(:,:,3),IStrings(:,:,7),nCAPairs,  &
+        nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
+      write(IOut,8000) nCAPairsAlpha,nCAPairsBeta,nCAPairs,nSpinFlip
 !
       end program CI_Singles
 
@@ -197,16 +206,18 @@
       end subroutine die
 
 
-      subroutine hphTest(IOut,NBasis,IString1,IString2)
+      subroutine hphTest(IOut,NBasis,IString1,IString2,nCAPairs,  &
+        nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
 !
       implicit none
       integer,intent(in)::IOut,NBasis
       integer,dimension(NBasis,2),intent(in)::IString1,IString2
-      integer::i,nElChange,nTotCreationAlpha,nTotAnnihilationAlpha,  &
-        nTotCreationBeta,nTotAnnihilationBeta,nTotCreation,  &
-        nTotAnnihilation
+      integer,intent(out)::nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip
+      integer::i,nElChange,nCreation,nAnnihilation,nCreationAlpha,  &
+        nAnnihilationAlpha,nCreationBeta,nAnnihilationBeta
       integer,dimension(:,:),allocatable::IStringDiff,creationOp,  &
         annihilationOp
+      logical::DEBUG=.false.
 !
  1000 Format(1x,'Enter test code...',/,3x,'Here are the two strings sent here:')
  1100 Format(1x,'Here is the creation operator...')
@@ -219,9 +230,11 @@
 !     and then figure out some critical info about how these two determinants
 !     relate to one another.
 !
-      write(IOut,1000)
-      call printUnrestrictedString(IOut,NBasis,-1,IString1)
-      call printUnrestrictedString(IOut,NBasis,-1,IString2)
+      if(DEBUG) then
+        write(IOut,1000)
+        call printUnrestrictedString(IOut,NBasis,-1,IString1)
+        call printUnrestrictedString(IOut,NBasis,-1,IString2)
+      endIf
 !
 !     Build IStringDiff and print it.
 !
@@ -246,19 +259,36 @@
           creationOp(i,1) = 1
         end select
       endDo
-      write(IOut,1100)
-      call printUnrestrictedString(IOut,NBasis,-1,creationOp)
-      write(IOut,1110)
-      call printUnrestrictedString(IOut,NBasis,-1,annihilationOp)
-      nTotCreationAlpha = SUM(creationOp(:,1))
-      nTotAnnihilationAlpha = SUM(annihilationOp(:,1))
-      nTotCreationBeta = SUM(creationOp(:,2))
-      nTotAnnihilationBeta = SUM(annihilationOp(:,2))
-      nTotCreation = SUM(creationOp)
-      nTotAnnihilation = SUM(annihilationOp)
-      if(nTotCreation.ne.nTotAnnihilation) call die(IOut,  &
-        'hphTest: nTotCreation.ne.nTotAnnihilation')
-      write(IOut,1200) nTotCreationAlpha,nTotCreationBeta,nTotCreation
+      if(DEBUG) then
+        write(IOut,1100)
+        call printUnrestrictedString(IOut,NBasis,-1,creationOp)
+        write(IOut,1110)
+        call printUnrestrictedString(IOut,NBasis,-1,annihilationOp)
+      endIf
+      nCreationAlpha = SUM(creationOp(:,1))
+      nCreationBeta = SUM(creationOp(:,2))
+      nAnnihilationAlpha = SUM(annihilationOp(:,1))
+      nAnnihilationBeta = SUM(annihilationOp(:,2))
+      nCreation = nCreationAlpha + nCreationBeta
+      nAnnihilation = nAnnihilationAlpha + nAnnihilationBeta
+      nSpinFlip = 0
+      if(nCreation.ne.nAnnihilation) call die(IOut,  &
+        'hphTest: nCreation.ne.nAnnihilation')
+      if(nCreationAlpha.eq.nAnnihilationAlpha) then
+        nCAPairsAlpha = nCreationAlpha
+      else
+        nSpinFlip = ABS(nCreationAlpha-nAnnihilationAlpha)
+        nCAPairsAlpha = MAX(nCreationAlpha,nAnnihilationAlpha)-nSpinFlip
+      endIf
+      if(nCreationBeta.eq.nAnnihilationBeta) then
+        nCAPairsBeta = nCreationBeta
+      elseIf(nSpinFlip.ne.(ABS(nCreationBeta-nAnnihilationBeta))) then
+        call die(IOut,'hphTest: Inconsistent spin flip detected!')
+      else
+        nCAPairsBeta = MAX(nCreationBeta,nAnnihilationBeta)-nSpinFlip
+      endIf
+      nCAPairs = nCAPairsAlpha+nCAPairsBeta
+      if(DEBUG) write(IOut,1200) nCAPairsAlpha,nCAPairsBeta,nCAPairs
 !
       return
       end subroutine hphTest
