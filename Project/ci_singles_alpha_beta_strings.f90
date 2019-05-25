@@ -12,6 +12,7 @@
 !     Last Updated 4/13/19
 
       implicit none
+      integer,parameter::IOut=6
       integer :: iDet = 2
       integer :: nDet, nOccBeta, nOccAlpha
       integer :: nVirtAlpha, nVirtBeta
@@ -44,7 +45,7 @@
 !     greater than the number of alpha or beta electrons
 !
       if (nBasis .le. max(nAlpha, nBeta)) then
-        write(*,*) ' The number of basis functions must be greater ', &
+        write(IOut,*) ' The number of basis functions must be greater ', &
           'than the number of alpha or beta electrons.'
         stop
       endif
@@ -56,18 +57,20 @@
 !     We pass the program's declared variables into the subroutine called
 !     stringAlphaBeta.
 !
-      call stringAlphaBeta(nOccAlpha,nOccBeta,nBasis,iDet,nDet,IStrings)
+      call stringAlphaBeta(IOut,nOccAlpha,nOccBeta,nBasis,iDet,nDet,  &
+        IStrings)
 !
       end program CI_Singles
 
 
-      subroutine stringAlphaBeta(NOccAlpha,NOccBeta,NBasis,IDet,NDet,IStrings)
+      subroutine stringAlphaBeta(IOut,NOccAlpha,NOccBeta,NBasis,IDet,  &
+        NDet,IStrings)
 !
 !     This subroutine builds a list of strings corresponding to singles
 !     substitutions. The reference string is taken to be in IStrings(1,1,1).
 !
       implicit none
-      integer,intent(in)::NBasis,NOccAlpha,NOccBeta,NDet
+      integer,intent(in)::IOut,NBasis,NOccAlpha,NOccBeta,NDet
       integer,intent(inOut)::IDet
       integer,dimension(NBasis,2,*),intent(inOut)::IStrings
       integer::IA,II
@@ -119,12 +122,13 @@
 !     strings on a new line with a space between them. This format should be
 !     recoded for generality.   
 !
-      write(*,*)
+      write(IOut,*)
       do IDet = 1, NDet
-        write(*,1000,advance='no') IDet,IStrings(:,1,IDet)
-        write(*,1010,advance='no') IStrings(:,2,IDet)
+!hph        write(*,1000,advance='no') IDet,IStrings(:,1,IDet)
+!hph        write(*,1010,advance='no') IStrings(:,2,IDet)
+        call printUnrestrictedString(IOut,NBasis,IDet,IStrings(:,:,IDet))
       endDo
-      write(*,*)
+      write(IOut,*)
 !
       return
       end subroutine stringAlphaBeta
@@ -140,11 +144,48 @@
 !
 !
 
+      subroutine printUnrestrictedString(iOut,NBasis,IDet,IString)
+!
+!     This subroutine is used to print a string defining a spin-unrestricted
+!     determinant. If IDet>=0, the determinant number label is printed with the
+!     string.
+!
+      integer,intent(in)::iOut,NBasis,IDet
+      integer,dimension(NBasis,2),intent(in)::IString
+!
+!     Format statements.
+!
+ 1000 format(' |',i3,' > :  ',(i1))
+ 1010 format(1x,(i1))
+ 1020 format(' | ',(i1))
+!
+!     Print the string.
+!
+      if(IDet.ge.0) then
+        write(iOut,1000,advance='no') IDet,IString(:,1)
+      else
+        write(iOut,1010,advance='no') IString(:,1)
+      endIf
+      write(iOut,1020,advance='no') IString(:,2)
+      write(iOut,*)
+!
+      return
+      end subroutine printUnrestrictedString
+
+
       subroutine hphTest(NBasis,IString1,IString2)
 !
       implicit none
       integer::NBasis
       integer,dimension(NBasis,2)::IString1,IString2
+!
+!     Report what we're testing in this particular call to the test subroutine
+!     and then figure out some critical info about how these two determinants
+!     relate to one another.
+!
 
       return
       end subroutine hphTest
+
+
+
