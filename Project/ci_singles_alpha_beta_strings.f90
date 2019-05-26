@@ -13,13 +13,14 @@
 
       implicit none
       integer,parameter::IOut=6
-      integer::iDet = 2
-      integer::nDet,nOccBeta,nOccAlpha
+      integer::iDet=2
+      integer::i,j,nDet,nOccBeta,nOccAlpha
       integer::nVirtAlpha,nVirtBeta,nCAPairs,nCAPairsAlpha,nCAPairsBeta,  &
         nSpinFlip
       integer,dimension(:,:,:),allocatable::IStrings
       integer,parameter::maximum_integer_digits = 999 !input restriction
       integer::nAlpha,nBeta,nBasis      
+      real,dimension(:,:),allocatable::SSquare
       character(maximum_integer_digits)::nA,nB,nBas !dummy input strings
 !
  8000 Format(1x,'Number of ALPHA creation/annihilation pairs: ',I5,/,  &
@@ -46,7 +47,6 @@
       nOccAlpha = nAlpha
       nOccBeta = nBeta
       nDet = ((nOccAlpha*nVirtAlpha)+(nOccBeta*nVirtBeta) + 1)
-
 !
 !     Below is a conditional that requires the number of basis functions to be
 !     greater than the number of alpha or beta electrons
@@ -60,6 +60,7 @@
 !     Allocate memory.
 !
       allocate(IStrings(NBasis,2,NDet)) ! Spin index is 2 long
+      allocate(SSquare(NDet,NDet))
 !
 !     We pass the program's declared variables into the subroutine called
 !     stringAlphaBeta.
@@ -72,9 +73,32 @@
 !
       Write(IOut,*)
       Write(IOut,*)' Sending test code strings 3 and 7...'
-      call hphTest(IOut,NBasis,IStrings(:,:,3),IStrings(:,:,7),nCAPairs,  &
-        nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
+      call stringsComparison(IOut,NBasis,IStrings(:,:,1),  &
+        IStrings(:,:,3),nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
       write(IOut,8000) nCAPairsAlpha,nCAPairsBeta,nCAPairs,nSpinFlip
+!
+!     Build the S-Squared matrix.
+!
+      do i = 1,NDet
+        do j = 1,NDet
+          call stringsComparison(IOut,NBasis,IStrings(:,:,i),  &
+            IStrings(:,:,j),nCAPairs,nCAPairsAlpha,nCAPairsBeta,  &
+            nSpinFlip)
+          if(nSpinFlip.gt.0.or.nCAPairs.gt.2) then
+            SSquare(i,j) = float(0)
+          elseIf(nCAPairs.eq.0) then
+            SSquare(i,j) = float(10)
+          elseIf(nCAPairs.eq.1) then
+            SSquare(i,j) = float(1)
+          elseIf(nCAPairs.eq.2) then
+            SSquare(i,j) = float(2)
+          else
+            call die('Confused filling SSquare.')
+          endIf
+        endDo
+      endDo
+      write(IOut,*)' Done building the S^2 matrix...'
+      call Print_Matrix_Full_Real(IOut,SSquare,NDet,NDet)
 !
       end program CI_Singles
 
@@ -206,8 +230,14 @@
       end subroutine die
 
 
-      subroutine hphTest(IOut,NBasis,IString1,IString2,nCAPairs,  &
+      subroutine stringsComparison(IOut,NBasis,IString1,IString2,nCAPairs,  &
         nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
+!
+!     This routine is used to compare two strings and determine how they relate
+!     to one another in terms of creation-annihilation pairs, including
+!     spin-flip pairs. Creation and annihilation are defined with the operators
+!     operating on the determinant represented by IString2 to give the
+!     determinant represented by IString1.
 !
       implicit none
       integer,intent(in)::IOut,NBasis
@@ -291,7 +321,37 @@
       if(DEBUG) write(IOut,1200) nCAPairsAlpha,nCAPairsBeta,nCAPairs
 !
       return
-      end subroutine hphTest
+      end subroutine stringsComparison
 
 
-
+      Subroutine Print_Matrix_Full_Real(IOut,AMat,M,N)
+!
+!     This subroutine prints a real matrix that is fully dimension - i.e.,
+!     not stored in packed form. AMat is the matrix, which is dimensioned
+!     (M,N).
+!
+!
+!     Variable Declarations
+!
+      implicit none
+      integer,intent(in)::IOut,M,N
+      real,dimension(M,N),intent(in)::AMat
+!
+!     Local variables
+      integer,parameter::NColumns=5
+      integer::i,j,IFirst,ILast
+!
+ 1000 Format(1x,A)
+ 2000 Format(5x,5(7x,I7))
+ 2010 Format(1x,I7,5F14.6)
+!
+      Do IFirst = 1,N,NColumns
+        ILast = Min(IFirst+NColumns-1,N)
+        write(IOut,2000) (i,i=IFirst,ILast)
+        Do i = 1,M
+          write(IOut,2010) i,(AMat(i,j),j=IFirst,ILast)
+        endDo
+      endDo
+!
+      return
+      end subroutine Print_Matrix_Full_Real
