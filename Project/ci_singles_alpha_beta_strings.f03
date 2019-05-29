@@ -17,6 +17,7 @@
 !
       use mqc_general
       use mqc_gaussian
+      use mqc_algebra2
       use iso_fortran_env
 !
 !     Variable Declarations
@@ -34,56 +35,54 @@
       character(maximum_integer_digits)::nA,nB,nBas !dummy input strings
       character(len=512)::matrixFilename
       type(mqc_gaussian_unformatted_matrix_file)::GMatrixFile
+      type(MQC_Variable)::SMatrixAO,CAlpha,CBeta
 !
 !     Format Statements
 !
+ 1000 Format(1x,'Enter SSquare.')
+ 1010 Format(3x,'Matrix File: ',A,/)
+ 1100 Format(1x,'nAlpha=',I4,'  nBeta=',I4,'  nMOs=',I5)
+ 1110 Format(1x,'nOccAlpha =,'I4,'  nOccBeta =',I4,/,  &
+        1x,'nVirtAlpha=',I5,'  nVirtBeta=',I5,/,       &
+        1x,'nDet=',I5)
  8000 Format(1x,'Number of ALPHA creation/annihilation pairs: ',I5,/,  &
         1x,'Number of BETA  creation/annihilation pairs: ',I5,/,  &
         1x,'Number of TOTAL creation/annihilation pairs: ',I5,/,  &
         1x,'Number of SPIN FLIP pairs                  : ',I5)
 !
 !
-
-
-!
-!     The following reads command line input into the variables: nAlpha, nBeta,
-!     and nBasis.
-!        
-!hph      call get_command_argument(1, nA) !separate each by a space in CLI
-!hph      call get_command_argument(2, nB)
-!hph      call get_command_argument(3, nBas)
-!hph      read (nA, *) nAlpha
-!hph      read (nB, *) nBeta
-!hph      read (nBas, *) nBasis
-
-
+      write(IOut,1000)
 !
 !     Open the Gaussian matrix file and load the number of alpha electrons
 !     (nAlpha), number of beta electrons (nBeta), and number of MOs (nBasis).
 !
-      matrixFileName = 'test.mat'
+      call get_command_argument(1,matrixFilename)
       call GMatrixFile%load(matrixFilename)
-      write(IOut,*)
-      write(IOut,*)
-      nBasis = GMatrixFile%getVal('nBasisUse')
+      write(IOut,1010) TRIM(matrixFilename)
       nAlpha = GMatrixFile%getVal('nAlpha')
       nBeta  = GMatrixFile%getVal('nBeta')
-      write(IOut,*)
-      write(IOut,*)
-
-
-
-
-
-
+      nBasis = GMatrixFile%getVal('nBasisUse')
+      write(IOut,1100) nAlpha,nBeta,nBasis
 !
 !     Define O/V orbitals and total number of singles determinants.
 !
-      nVirtAlpha = nBasis - nAlpha
-      nVirtBeta = nBasis - nBeta
       nOccAlpha = nAlpha
       nOccBeta = nBeta
+      nVirtAlpha = nBasis - nAlpha
+      nVirtBeta = nBasis - nBeta
       nDet = ((nOccAlpha*nVirtAlpha)+(nOccBeta*nVirtBeta) + 1)
+      write(IOut,1110) nOccAlpha,nOccBeta,nVirtAlpha,nVirtBeta,nDet
+!
+!     To evaluate matrix elements below, we need atomic orbital overlap matrix
+!     elements and MO coefficient matrices. Pull those form the Gaussian matrix
+!     file and load them into MQC_Algebra2 objects.
+!
+      call GMatrixFile%getArray('OVERLAP',mqcVarOut=SMatrixAO)
+      call SMatrixAO%print(header='Overlap Matrix')
+
+
+
+
 !
 !     Below is a conditional that requires the number of basis functions to be
 !     greater than the number of alpha or beta electrons
