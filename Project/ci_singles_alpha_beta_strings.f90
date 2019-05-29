@@ -223,8 +223,12 @@
 !
  1000 Format(/,1x,A,/,/,1x,'The program has FAILED!')
 !
-      write(IOut,1000) TRIM(message)
-      STOP
+      write(IOut,*)
+      write(IOut,*)' In DIE!'
+      write(IOut,*)
+      call flush(IOut)
+      write(IOut,1000) 'abc'
+      call exit(999)
 !
       return
       end subroutine die
@@ -302,8 +306,10 @@
       nCreation = nCreationAlpha + nCreationBeta
       nAnnihilation = nAnnihilationAlpha + nAnnihilationBeta
       nSpinFlip = 0
-      if(nCreation.ne.nAnnihilation) call die(IOut,  &
-        'hphTest: nCreation.ne.nAnnihilation')
+      if(nCreation.ne.nAnnihilation) then
+        call die(IOut,'nCreation.ne.nAnnihilation')
+        write(Iout,*)' Hrant - I am back 1!'
+      endIf
       if(nCreationAlpha.eq.nAnnihilationAlpha) then
         nCAPairsAlpha = nCreationAlpha
       else
@@ -313,7 +319,8 @@
       if(nCreationBeta.eq.nAnnihilationBeta) then
         nCAPairsBeta = nCreationBeta
       elseIf(nSpinFlip.ne.(ABS(nCreationBeta-nAnnihilationBeta))) then
-        call die(IOut,'hphTest: Inconsistent spin flip detected!')
+        call die(IOut,'Inconsistent spin flip detected!')
+        write(Iout,*)' Hrant - I am back 2!'
       else
         nCAPairsBeta = MAX(nCreationBeta,nAnnihilationBeta)-nSpinFlip
       endIf
