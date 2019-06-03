@@ -1,0 +1,10 @@
+#p test uhf sto-3g guess=mix output=mat
+
+Test001 - H2 at long distance with broken-symmetry result (1.5 A).
+
+0  1
+h
+h  1  1.5
+
+test001.mat
+

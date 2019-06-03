@@ -10,43 +10,88 @@
 !     A.Zamani
 !
 !     Last Updated 4/13/19
-
+!
+!
+!
+!     USE Connections
+!
+      use mqc_general
+      use mqc_gaussian
+      use mqc_algebra2
+      use iso_fortran_env
+!
+!     Variable Declarations
+!
       implicit none
       integer,parameter::IOut=6
       integer::iDet=2
-      integer::i,j,nDet,nOccBeta,nOccAlpha
+      integer::i,j,nDet,nOccAlpha,nOccBeta,nOccAlphaTemp,nOccBetaTemp
       integer::nVirtAlpha,nVirtBeta,nCAPairs,nCAPairsAlpha,nCAPairsBeta,  &
         nSpinFlip
       integer,dimension(:,:,:),allocatable::IStrings
       integer,parameter::maximum_integer_digits = 999 !input restriction
-      integer::nAlpha,nBeta,nBasis      
-      real,dimension(:,:),allocatable::SSquare
+      integer::nAlpha,nBeta,nBasis
+      real::SzTemp,SSquareSum
+      real,dimension(:,:),allocatable::SSquare,SMatrixAO,CAlpha,CBeta,  &
+        Temp_SMatrixOccAB
       character(maximum_integer_digits)::nA,nB,nBas !dummy input strings
+      character(len=512)::matrixFilename
+      type(mqc_gaussian_unformatted_matrix_file)::GMatrixFile
+      type(MQC_Variable)::SMatrixAO_mqc,CAlpha_mqc,CBeta_mqc
 !
+!     Format Statements
+!
+ 1000 Format(1x,'Enter SSquare.')
+ 1010 Format(3x,'Matrix File: ',A,/)
+ 1100 Format(1x,'nAlpha=',I4,'  nBeta=',I4,'  nMOs=',I5)
+ 1110 Format(1x,'nOccAlpha =,'I4,'  nOccBeta =',I4,/,  &
+        1x,'nVirtAlpha=',I5,'  nVirtBeta=',I5,/,       &
+        1x,'nDet=',I5)
  8000 Format(1x,'Number of ALPHA creation/annihilation pairs: ',I5,/,  &
         1x,'Number of BETA  creation/annihilation pairs: ',I5,/,  &
         1x,'Number of TOTAL creation/annihilation pairs: ',I5,/,  &
         1x,'Number of SPIN FLIP pairs                  : ',I5)
 !
 !
-!     The following reads command line input into the variables: nAlpha, nBeta,
-!     and nBasis.
-! 
-!        
-      call get_command_argument(1, nA) !separate each by a space in CLI
-      call get_command_argument(2, nB)
-      call get_command_argument(3, nBas)
-      read (nA, *) nAlpha
-      read (nB, *) nBeta
-      read (nBas, *) nBasis
+      write(IOut,1000)
+!
+!     Open the Gaussian matrix file and load the number of alpha electrons
+!     (nAlpha), number of beta electrons (nBeta), and number of MOs (nBasis).
+!
+      call get_command_argument(1,matrixFilename)
+      call GMatrixFile%load(matrixFilename)
+      write(IOut,1010) TRIM(matrixFilename)
+      nAlpha = GMatrixFile%getVal('nAlpha')
+      nBeta  = GMatrixFile%getVal('nBeta')
+      nBasis = GMatrixFile%getVal('nBasisUse')
+      write(IOut,1100) nAlpha,nBeta,nBasis
 !
 !     Define O/V orbitals and total number of singles determinants.
 !
-      nVirtAlpha = nBasis - nAlpha
-      nVirtBeta = nBasis - nBeta
       nOccAlpha = nAlpha
       nOccBeta = nBeta
+      nVirtAlpha = nBasis - nAlpha
+      nVirtBeta = nBasis - nBeta
       nDet = ((nOccAlpha*nVirtAlpha)+(nOccBeta*nVirtBeta) + 1)
+      write(IOut,1110) nOccAlpha,nOccBeta,nVirtAlpha,nVirtBeta,nDet
+!
+!     To evaluate matrix elements below, we need atomic orbital overlap matrix
+!     elements and MO coefficient matrices. Pull those form the Gaussian matrix
+!     file and load them into MQC_Algebra2 objects.
+!
+      call GMatrixFile%getArray('OVERLAP',mqcVarOut=SMatrixAO_mqc)
+      call SMatrixAO_mqc%print(header='Overlap Matrix')
+      call GMatrixFile%getArray('ALPHA MO COEFFICIENTS',mqcVarOut=CAlpha_mqc)
+      call GMatrixFile%getArray('BETA MO COEFFICIENTS',mqcVarOut=CBeta_mqc)
+      call CAlpha_mqc%print(header='MO Coefficients, ALPHA')
+      call Cbeta_mqc%print(header='MO Coefficients, BETA')
+!
+!     For now, we'll take the MQC matrices and copy them into intrinsic fortran
+!     arrays.
+!
+      SMatrixAO = SMatrixAO_mqc
+      CAlpha = CAlpha_mqc
+      CBeta= CBeta_mqc
 !
 !     Below is a conditional that requires the number of basis functions to be
 !     greater than the number of alpha or beta electrons
@@ -87,11 +132,21 @@
           if(nSpinFlip.gt.0.or.nCAPairs.gt.2) then
             SSquare(i,j) = float(0)
           elseIf(nCAPairs.eq.0) then
-            SSquare(i,j) = float(10)
+            if(i.ne.j) call die('Should be diagonal element, but i.ne.j. ?')
+            call stringNOcc(NBasis,IStrings(:,:,i),nOccAlphaTemp,  &
+              nOccBetaTemp,SzTemp)
+            allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
+            call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
+              nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
+              Temp_SMatrixOccAB,SSquareSum)
+            SSquare(i,j) = SzTemp*(SzTemp+float(1)) +  &
+              float(nOccBetaTemp) - SSquareSum
+!hph            SSquare(i,j) = float(10)
+            deallocate(Temp_SMatrixOccAB)
           elseIf(nCAPairs.eq.1) then
-            SSquare(i,j) = float(1)
+            SSquare(i,j) = float(100)
           elseIf(nCAPairs.eq.2) then
-            SSquare(i,j) = float(2)
+            SSquare(i,j) = float(200)
           else
             call die('Confused filling SSquare.')
           endIf
@@ -329,6 +384,75 @@
 !
       return
       end subroutine stringsComparison
+
+
+      subroutine stringNOcc(NBasis,IString,NOccA,NOccB,SzTemp)
+!
+!     This routine is used to compute the number of occupied alpha and beta MOs
+!     in the determinant defined by IString.
+!
+      implicit none
+      integer,intent(in)::NBasis
+      integer,dimension(NBasis,2),intent(in)::IString
+      integer,intent(out)::NOccA,NOccB
+      real,intent(out)::SzTemp
+!
+      NOccA = SUM(IString(:,1))
+      NOccB = SUM(IString(:,2))
+      SzTemp = float(NOccA-NOccB)/float(2)
+!
+      return
+      end subroutine stringNOcc
+
+
+      Subroutine Form_AlphaBeta_Occ_Overlap(NBasis,NOccA,NOccB,IString,  &
+        SMatrixAO,CAlpha,CBeta,SMatrixAlphaBeta,SSquareSum)
+!
+!     This subroutine forms an alpha-beta overlap between occupied MOs for the
+!     determinant defined by IString.
+!
+!
+!     Variable Declarations
+!
+      implicit none
+      integer,intent(in)::NBasis,NOccA,NOccB
+      integer,dimension(NBasis,2),intent(in)::IString
+      real,dimension(NBasis,NBasis),intent(in)::SMatrixAO,CAlpha,CBeta
+      real,dimension(NOccA,NOccB),intent(out)::SMatrixAlphaBeta
+      real,intent(out)::SSquareSum
+      integer::i,ii
+      real,dimension(NBasis,NOccA)::TempCAlphaOcc
+      real,dimension(NBasis,NOccB)::TempCBetaOcc
+!
+!     The starting point is building temporary MO coefficient matrices that run
+!     only over the occupied MOs of the determinant defined by IString.
+!
+      ii = 0
+      do i = 1,NBasis
+        if(IString(i,1).eq.1) then
+          ii = ii+1
+          TempCAlphaOcc(:,ii) = CAlpha(:,i)
+        endIf
+      endDo
+      ii = 0
+      do i = 1,NBasis
+        if(IString(i,2).eq.1) then
+          ii = ii+1
+          TempCBetaOcc(:,ii) = CBeta(:,i)
+        endIf
+      endDo
+!
+!     Using the temp CAlpha and CBeta arrays, form SMatrixAlphaBeta using
+!     MatMul.
+!
+      SMatrixAlphaBeta = MatMul(  &
+        MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc)
+      SSquareSum = dot_product(  &
+        Reshape(SMatrixAlphaBeta,[NOccA*NOccB]),  &
+        Reshape(SMatrixAlphaBeta,[NOccA*NOccB]))
+!
+      return
+      end subroutine Form_AlphaBeta_Occ_Overlap
 
 
       Subroutine Print_Matrix_Full_Real(IOut,AMat,M,N)
