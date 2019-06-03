@@ -1,0 +1,7 @@
+# Object and executable files
+*.o
+*.exe
+
+# Gaussian unformatted matrix files and checkpoint files.
+*.mat
+*.chk
