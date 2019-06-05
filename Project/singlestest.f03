@@ -166,14 +166,28 @@
 
         write(*,*), 'write j ',j !check if j is changing
         
+
+!Need 2 temp arrays for each
             allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
             allocate(Temp_SMatrixOccAB_TEST(nOccAlphaTemp,nOccBetaTemp))
-            call Form_AlphaBeta_Occ_Overlap_TEST(NBasis,nOccAlphaTemp, &
+
+!Calling twice for i and j: loops over both work ok
+              call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
+              nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
+              Temp_SMatrixOccAB,SSquareSum)
+
+              call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
               nOccBetaTemp,IStrings(:,:,j),SMatrixAO,CAlpha,CBeta,  &
-              Temp_SMatrixOccAB,Temp_SMatrixOccAB_TEST,SSquareSum)
+              Temp_SMatrixOccAB_TEST,SSquareSum)
+
+
+
+         !   call Form_AlphaBeta_Occ_Overlap_TEST(NBasis,nOccAlphaTemp, &
+         !     nOccBetaTemp,IStrings(:,:,j),SMatrixAO,CAlpha,CBeta,  &
+         !     Temp_SMatrixOccAB,Temp_SMatrixOccAB_TEST,SSquareSum)
 
          write(*,*), 'write i ',i !check if i is changing
-
+        !S**2
             SSquare(i,j) = SzTemp*(SzTemp+float(1)) +  &
               float(nOccBetaTemp) - SSquareSum
 
@@ -587,7 +601,7 @@
       SMatrixAlphaBeta_TEST = MatMul(  &
         MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc_TEST)
 
-
+!Create a new Matrix contraction for off diagonals
       SSquareSum = dot_product(  &
         Reshape(SMatrixAlphaBeta,[NOccA*NOccB]),  &
         Reshape(SMatrixAlphaBeta_TEST,[NOccA*NOccB]))
