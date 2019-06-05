@@ -596,6 +596,9 @@
 !     Using the temp CAlpha and CBeta arrays, form SMatrixAlphaBeta using
 !     MatMul.
 !
+
+!Below might not be needed---->just recoded a 2nd subroutine to give us
+!a new definition of SSquare (in the form of a new matrix contraction)
       SMatrixAlphaBeta = MatMul(  &
         MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc)
       SMatrixAlphaBeta_TEST = MatMul(  &
