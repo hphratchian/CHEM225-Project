@@ -153,22 +153,10 @@
           if(i.eq.j) call die('Should be off-diagonal element, &
                  but i.eq.j. ?') 
 !Print these variables before calling subroutine
-        write(*,*), 'nOccAlpha: ',nOccAlphaTemp
-        write(*,*), 'nOccAlpha: ',nOccBetaTemp
-        write(*,*), 'sZTemp: ',SzTemp !Print to see if Sz is correct
           call stringNOcc(NBasis,IStrings(:,:,i),nOccAlphaTemp,  &
             nOccBetaTemp,SzTemp)
 
-!Print these variables after calling subroutine
-        write(*,*), 'nOccAlpha: ',nOccAlphaTemp
-        write(*,*), 'nOccAlpha: ',nOccBetaTemp
-        write(*,*), 'sZTemp: ',SzTemp !Print to see if Sz is correct
-
-
-        write(*,*), 'write j ',j !check if j is changing
-        
-
-!Need 2 temp arrays for each
+!Need 2 temp arrays for each MO overlap used in MatMul expression
             allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
             allocate(Temp_SMatrixOccAB_2(nOccAlphaTemp,nOccBetaTemp))
 
@@ -557,20 +545,23 @@
       integer :: NOccA, NOccB
       integer :: nOccBetaTemp
       real, intent(in) ::  SzTemp
-      real,dimension(:,:), allocatable :: SSquare
+      real,dimension(:,:), allocatable, intent(out) :: SSquare
       real, dimension(NOccA,NOccB) :: OverlapSum
       real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta
       real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta_2
       ! ^ this comes from Form_AlphaBeta_Occ_Overlap , the 2nd to last term in
       ! the call statement: Temp_SMatrixOccAB ^
-      !real, intent(out) SSquare
 
-
+      !The matrix multiplication expression below generates the whole
+      !overlap matrix. The nested do loops that follow are supposed to
+      !pull the off diagonal (i != j) elements and feed them into the 
+      !SSquare matrix expression. SSquare should be passed into the main
+      !program.
       OverlapSum = MatMul(  &
       (SMatrixAlphaBeta),  &
       (SMatrixAlphaBeta_2))
 
-      write(*,*), 'Overlap Sum: ', OverlapSum
+      !write(*,*), 'Overlap Sum: ', OverlapSum
 
       do i=1, NoccA
         do j=1, NoccB
