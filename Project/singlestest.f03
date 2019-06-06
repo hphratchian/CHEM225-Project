@@ -1,6 +1,9 @@
       Program CI_Singles
 !
-!     This program constructs all Sz-conserving singles substitutions.
+!     This program builds the S^2 Matrix using all Sz-conserving
+!     singles substitutions. Each matrix element is formed based on the
+!     Slater-Condon Rules. ***Expand Description*** 
+!            
 !
 !     The singles excitations are formatted as strings using the number of alpha
 !     electrons, the number of beta electrons, and the number of basis
@@ -9,10 +12,10 @@
 !
 !     A.Zamani
 !
-!     Last Updated 4/13/19
+!     Last Updated 6/6/19
 !
 !
-!
+!     MQC Utilities 
 !     USE Connections
 !
       use mqc_general
@@ -33,7 +36,7 @@
       integer::nAlpha,nBeta,nBasis
       real::SzTemp,SSquareSum
       real,dimension(:,:),allocatable::SSquare,SMatrixAO,CAlpha,CBeta,  &
-        Temp_SMatrixOccAB, Temp_SMatrixOccAB_TEST
+        Temp_SMatrixOccAB, Temp_SMatrixOccAB_2
       character(maximum_integer_digits)::nA,nB,nBas !dummy input strings
       character(len=512)::matrixFilename
       type(mqc_gaussian_unformatted_matrix_file)::GMatrixFile
@@ -153,10 +156,8 @@
         write(*,*), 'nOccAlpha: ',nOccAlphaTemp
         write(*,*), 'nOccAlpha: ',nOccBetaTemp
         write(*,*), 'sZTemp: ',SzTemp !Print to see if Sz is correct
-            call stringNOcc(NBasis,IStrings(:,:,i),nOccAlphaTemp,  &
-              nOccBetaTemp,SzTemp)
-
-        !SzTemp = float(1) !lol spin flips not accounted for
+          call stringNOcc(NBasis,IStrings(:,:,i),nOccAlphaTemp,  &
+            nOccBetaTemp,SzTemp)
 
 !Print these variables after calling subroutine
         write(*,*), 'nOccAlpha: ',nOccAlphaTemp
@@ -169,32 +170,30 @@
 
 !Need 2 temp arrays for each
             allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
-            allocate(Temp_SMatrixOccAB_TEST(nOccAlphaTemp,nOccBetaTemp))
+            allocate(Temp_SMatrixOccAB_2(nOccAlphaTemp,nOccBetaTemp))
 
 !Calling twice for i and j: loops over both work ok
-              call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
-              nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
-              Temp_SMatrixOccAB,SSquareSum)
+          call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
+            nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
+            Temp_SMatrixOccAB,SSquareSum)
+!Call again to fill Temp_SMatrixOccAB_2 & SMatrixAlphaBeta_2         
 
-              call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
-              nOccBetaTemp,IStrings(:,:,j),SMatrixAO,CAlpha,CBeta,  &
-              Temp_SMatrixOccAB_TEST,SSquareSum)
+          call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
+            nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
+            Temp_SMatrixOccAB_2,SSquareSum)
+
+!
+!***New routine for forming full S^2 matrix and pulling off-diagonals***
+!
+          call Form_AlphaBeta_Occ_Overlap_Off_Diagonal(nOccAlpha,nOccBeta, &
+            Temp_SMatrixOccAB, Temp_SMatrixOccAB_2,SzTemp,nOccBetaTemp,SSquare) 
 
 
-
-         !   call Form_AlphaBeta_Occ_Overlap_TEST(NBasis,nOccAlphaTemp, &
-         !     nOccBetaTemp,IStrings(:,:,j),SMatrixAO,CAlpha,CBeta,  &
-         !     Temp_SMatrixOccAB,Temp_SMatrixOccAB_TEST,SSquareSum)
-
-         write(*,*), 'write i ',i !check if i is changing
-        !S**2
-            SSquare(i,j) = SzTemp*(SzTemp+float(1)) +  &
-              float(nOccBetaTemp) - SSquareSum
 
 !Overlap not changing and SzTemp is not reinitialized
             deallocate(Temp_SMatrixOccAB)
 !This TEST version of the overlap temp matrix includes beta 'j' strings
-            deallocate(Temp_SMatrixOccAB_TEST)
+            deallocate(Temp_SMatrixOccAB_2)
 
 !SC Rule: 2 Diff
           elseIf(nCAPairs.eq.2) then
@@ -206,6 +205,7 @@
       endDo
       write(IOut,*)' Done building the S^2 matrix...'
       call Print_Matrix_Full_Real(IOut,SSquare,NDet,NDet)
+      
 !
       end program CI_Singles
 
@@ -499,9 +499,14 @@
 !
       SMatrixAlphaBeta = MatMul(  &
         MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc)
+        print*,'MO OVERLAP MATRIX: ' 
+        call Print_Matrix_Full_Real(6,SMatrixAlphaBeta,NOccA,NOccB)
+
       SSquareSum = dot_product(  &
         Reshape(SMatrixAlphaBeta,[NOccA*NOccB]),  &
         Reshape(SMatrixAlphaBeta,[NOccA*NOccB]))
+
+        
 !
       return
       end subroutine Form_AlphaBeta_Occ_Overlap
@@ -539,78 +544,44 @@
       return
       end subroutine Print_Matrix_Full_Real
 
-      Subroutine Form_AlphaBeta_Occ_Overlap_TEST(NBasis,NOccA,NOccB,IString,  &
-        SMatrixAO,CAlpha,CBeta,SMatrixAlphaBeta,SMatrixAlphaBeta_TEST,SSquareSum)
-!
-!     This subroutine forms an alpha-beta overlap between occupied MOs for the
-!     determinant defined by IString.
-!
-!
-!     Variable Declarations
-!
+
+
+!call Form_AlphaBeta_Occ_Overlap_Off_Diagonal(nOccAlpha,nOccBeta, &
+!        Temp_SMatrixOccAB,Temp_SMatrixOccAB_2,SzTemp,nOccBetaTemp,SSquare) 
+
+      subroutine Form_AlphaBeta_Occ_Overlap_Off_Diagonal(NOccA,NOccB, &
+        SMatrixAlphaBeta,SMatrixAlphaBeta_2,SzTemp,nOccBetaTemp,SSquare)
+       
       implicit none
-      integer,intent(in)::NBasis,NOccA,NOccB
-      integer,dimension(NBasis,2),intent(in)::IString
-      real,dimension(NBasis,NBasis),intent(in)::SMatrixAO,CAlpha,CBeta
-      real,dimension(NOccA,NOccB),intent(out)::SMatrixAlphaBeta
-      real,dimension(NOccA,NOccB),intent(out)::SMatrixAlphaBeta_TEST
-      real,intent(out)::SSquareSum
-      integer::i,ii,j,jj
-      real,dimension(NBasis,NOccA)::TempCAlphaOcc,TempCAlphaOcc_TEST
-      real,dimension(NBasis,NOccB)::TempCBetaOcc, TempCBetaOcc_TEST
-!
-!     The starting point is building temporary MO coefficient matrices that run
-!     only over the occupied MOs of the determinant defined by IString.
-!
-      ii = 0
-      do i = 1,NBasis
-        if(IString(i,1).eq.1) then
-          ii = ii+1
-          TempCAlphaOcc(:,ii) = CAlpha(:,i)
-        endIf
-      endDo
-      ii = 0
-      do i = 1,NBasis
-        if(IString(i,2).eq.1) then
-          ii = ii+1
-          TempCBetaOcc(:,ii) = CBeta(:,i)
-        endIf
-      endDo
-
-      jj = 0
-      do j = 1,NBasis
-        if(IString(j,1).eq.1) then
-          jj = jj+1
-          TempCAlphaOcc_TEST(:,jj) = CAlpha(:,j)
-        endIf
-      endDo
-      jj = 0
-      do i = j,NBasis
-        if(IString(j,2).eq.1) then
-          jj = jj+1
-          TempCBetaOcc_TEST(:,jj) = CBeta(:,j)
-        endIf
-      endDo
-
-!
-!     Using the temp CAlpha and CBeta arrays, form SMatrixAlphaBeta using
-!     MatMul.
-!
-
-!Below might not be needed---->just recoded a 2nd subroutine to give us
-!a new definition of SSquare (in the form of a new matrix contraction)
-      SMatrixAlphaBeta = MatMul(  &
-        MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc)
-      SMatrixAlphaBeta_TEST = MatMul(  &
-        MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc_TEST)
-
-!Create a new Matrix contraction for off diagonals
-      SSquareSum = dot_product(  &
-        Reshape(SMatrixAlphaBeta,[NOccA*NOccB]),  &
-        Reshape(SMatrixAlphaBeta_TEST,[NOccA*NOccB]))
-!
-      return
-      end subroutine Form_AlphaBeta_Occ_Overlap_TEST
+      integer :: i, j
+      integer :: NOccA, NOccB
+      integer :: nOccBetaTemp
+      real, intent(in) ::  SzTemp
+      real,dimension(:,:), allocatable :: SSquare
+      real, dimension(NOccA,NOccB) :: OverlapSum
+      real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta
+      real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta_2
+      ! ^ this comes from Form_AlphaBeta_Occ_Overlap , the 2nd to last term in
+      ! the call statement: Temp_SMatrixOccAB ^
+      !real, intent(out) SSquare
 
 
+      OverlapSum = MatMul(  &
+      (SMatrixAlphaBeta),  &
+      (SMatrixAlphaBeta_2))
 
+      write(*,*), 'Overlap Sum: ', OverlapSum
+
+      do i=1, NoccA
+        do j=1, NoccB
+          if (i.eq.j) then
+            print*,' i != j must be the case '
+            elseif (i.ne.j) then
+        SSquare(i,j) = SzTemp*(SzTemp+float(1)) +  &
+            float(nOccBetaTemp) - OverlapSum(i,j)
+          endif
+        enddo
+      enddo
+      
+
+      end subroutine Form_AlphaBeta_Occ_Overlap_Off_Diagonal
