@@ -545,8 +545,9 @@
       integer :: NOccA, NOccB
       integer :: nOccBetaTemp
       real, intent(in) ::  SzTemp
-      real,dimension(:,:), allocatable, intent(out) :: SSquare
-      real, dimension(NOccA,NOccB) :: OverlapSum
+      real,dimension(:,:), allocatable :: SSquare
+      !real, dimension(NOccA,NOccB) :: OverlapSum
+      real, dimension(:,:), allocatable :: OverlapSum
       real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta
       real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta_2
       ! ^ this comes from Form_AlphaBeta_Occ_Overlap , the 2nd to last term in
@@ -557,11 +558,16 @@
       !pull the off diagonal (i != j) elements and feed them into the 
       !SSquare matrix expression. SSquare should be passed into the main
       !program.
+
       OverlapSum = MatMul(  &
       (SMatrixAlphaBeta),  &
       (SMatrixAlphaBeta_2))
 
-      !write(*,*), 'Overlap Sum: ', OverlapSum
+      !write(*,*), 'Off-Diagonal Overlap Sum: ', OverlapSum
+      !write(*,*), SMatrixAlphaBeta
+      !write(*,*), SMatrixAlphaBeta_2
+
+
 
       do i=1, NoccA
         do j=1, NoccB
@@ -571,6 +577,8 @@
         SSquare(i,j) = SzTemp*(SzTemp+float(1)) +  &
             float(nOccBetaTemp) - OverlapSum(i,j)
           endif
+          !Printing to see if the overlap term for off-diagonal changes
+          write(*,*), 'Diagonal Overlap Sum: ', OverlapSum
         enddo
       enddo
       
