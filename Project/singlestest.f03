@@ -14,6 +14,13 @@
 !
 !     Last Updated 6/6/19
 !
+!     *No index for strings w/ different orbital occupancies
+!     Find a way to do a matrix contraction while freezing the orbitals
+!     that stay the same.
+
+
+
+!
 !
 !     MQC Utilities 
 !     USE Connections
@@ -539,14 +546,15 @@
 
       subroutine Form_AlphaBeta_Occ_Overlap_Off_Diagonal(NOccA,NOccB, &
         SMatrixAlphaBeta,SMatrixAlphaBeta_2,SzTemp,nOccBetaTemp,SSquare)
-       
+      
       implicit none
       integer :: i, j
       integer :: NOccA, NOccB
       integer :: nOccBetaTemp
       real, intent(in) ::  SzTemp
+      !real,dimension(:,:), allocatable, intent(out) :: SSquare
       real,dimension(:,:), allocatable :: SSquare
-      !real, dimension(NOccA,NOccB) :: OverlapSum
+
       real, dimension(:,:), allocatable :: OverlapSum
       real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta
       real, dimension(NOccA,NOccB), intent(in) :: SMatrixAlphaBeta_2
@@ -563,10 +571,9 @@
       (SMatrixAlphaBeta),  &
       (SMatrixAlphaBeta_2))
 
-      !write(*,*), 'Off-Diagonal Overlap Sum: ', OverlapSum
-      !write(*,*), SMatrixAlphaBeta
-      !write(*,*), SMatrixAlphaBeta_2
-
+      !OverlapSum = MatMul(  &
+      !reshape(SMatrixAlphaBeta,[NOccA*NOccB]),  &
+      !reshape(SMatrixAlphaBeta_2,[NOccA*NOccB]))
 
 
       do i=1, NoccA
