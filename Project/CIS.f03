@@ -72,10 +72,7 @@
 ! passed out of stringsComparison for use in general contraction      
       integer, dimension(:,:), allocatable :: COP, &
          AOP 
-! temp determinant strings passed out of printUnrestrictedString    
-!      integer, dimension(NBASIS,2) :: iString1, iString2
-! ^ find a way to pass these from where they came and into general
-! contraction
+
 
 
 
@@ -197,7 +194,7 @@
                 
            ! call general contraction(creationOp, &
            !   annihilationOp, Temp_SMatrixOccAB, Temp_SMatrixOccAB_2, &
-           !   OverlapSum, nBasis, iString1, iString2) 
+           !   OverlapSum, nBasis, IStrings(:,:,i), IString2(:,:,j)) 
            ! I'm missing the MO coefficient arrays somewhere...
 
 !
@@ -591,11 +588,10 @@
       
 ! I gotta pass the SMatrixAlphaBeta into here...Need 2 versions to
 ! replace overlapMO_1 and overlapMO_2 
-!      real, dimension(:,:), allocatable :: Temp_SMatrixOccAB
-!      real, dimension(:,:), allocatable :: Temp_SMatrixOccAB_2
       
       integer, dimension(NBASIS,2),intent(in) :: string1, string2
-      
+     
+ 
       numCreate = sum(cOp)
       numAnnihilate = sum(aOp)
        
