@@ -62,8 +62,22 @@
       real, dimension(:,:), allocatable :: SSquared
 ! the temporary matrix below stores the contents of the alpha/beta MO Overlap
       real, dimension(:,:), allocatable :: Temp_SMatrixOccAB
+      real, dimension(:,:), allocatable :: Temp_SMatrixOccAB_2
 ! define format parameter
       integer, parameter :: iOut = 6
+
+! a new definition of the overlap sum term in <S^2>
+! remember to allocate and deallocate for other SC rule blocks
+      integer, dimension(:,:), allocatable :: OverlapSum
+! passed out of stringsComparison for use in general contraction      
+      integer, dimension(:,:), allocatable :: COP, &
+         AOP 
+! temp determinant strings passed out of printUnrestrictedString    
+!      integer, dimension(NBASIS,2) :: iString1, iString2
+! ^ find a way to pass these from where they came and into general
+! contraction
+
+
 
 ! START: general format statements
  1000 Format(1x,'Enter SSquared.')
@@ -141,7 +155,8 @@
       Write(IOut,*)
       Write(IOut,*)' Sending test code strings 3 and 7...'
       call stringsComparison(IOut,NBasis,IStrings(:,:,1),  &
-        IStrings(:,:,3),nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
+        IStrings(:,:,3),nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip, &
+        COP, AOP)
       write(IOut,8000) nCAPairsAlpha,nCAPairsBeta,nCAPairs,nSpinFlip
 ! END: testing
 
@@ -156,7 +171,7 @@
         do j = 1,NDet
           call stringsComparison(IOut,NBasis,IStrings(:,:,i),  &
             IStrings(:,:,j),nCAPairs,nCAPairsAlpha,nCAPairsBeta,  &
-            nSpinFlip)
+            nSpinFlip, COP, AOP)
           if(nSpinFlip.gt.0.or.nCAPairs.gt.2) then
             SSquared(i,j) = float(0)
 ! SC Rule 1:
@@ -168,19 +183,27 @@
             allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
             call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
               nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
-              Temp_SMatrixOccAB,SSquareSum)
+              Temp_SMatrixOccAB, Temp_SMatrixOccAB_2,SSquareSum)
             SSquared(i,j) = SzTemp*(SzTemp+float(1)) +  &
               float(nOccBetaTemp) - SSquareSum
 ! placeholder          SSquared(i,j) = float(10)
             deallocate(Temp_SMatrixOccAB)
+!SC Rule 2:
           elseIf(nCAPairs.eq.1) then
-! SC Rule 2:
             if(i.eq.j) call die('Should be off-diagonal element, &
                  but i.eq.j. ?')
 ! placeholder            SSquared(i,j) = float(100)
+! AZ coding....
+                
+           ! call general contraction(creationOp, &
+           !   annihilationOp, Temp_SMatrixOccAB, Temp_SMatrixOccAB_2, &
+           !   OverlapSum, nBasis, iString1, iString2) 
+           ! I'm missing the MO coefficient arrays somewhere...
 
-          elseIf(nCAPairs.eq.2) then
+!
+
 ! SC Rule 3:
+          elseIf(nCAPairs.eq.2) then
             if(i.eq.j) call die('Should be off-diagonal element, &
                  but i.eq.j. ?')
 ! placeholder            SSquared(i,j) = float(200)
@@ -265,7 +288,7 @@
       ! format and print the singles determinants
       write(IOUT,*)
       do IDET = 1, NDET
-      ! use the 
+      ! using the formatting subroutine 
         call printUnrestrictedString(IOUT,NBASIS,IDET, &
           ISTRINGS(:,:,IDET))
       endDo
@@ -317,8 +340,8 @@
 ! this subroutine is called to kill the program after printing our
 ! an error message.
 !
-      integer,intent(in)::IOUT
-      character(Len=512),intent(in)::message
+      integer,intent(in) :: IOUT
+      character(Len=512),intent(in) :: message
 !
  1000 Format(/,1x,A,/,/,1x,'The program has FAILED!')
 !
@@ -335,8 +358,9 @@
 !
 
 
-      subroutine stringsComparison(IOUT,NBASIS,ISTRING1,ISTRING2,nCAPairs,  &
-        nCAPairsAlpha,nCAPairsBeta,nSpinFlip)
+      subroutine stringsComparison(IOUT,NBASIS,ISTRING1,ISTRING2,
+        nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip, creationOp, &
+        annihilationOp)
 !
 ! This routine is used to compare two strings and determine how they
 ! relate to one another in terms of creation-annihilation pairs, 
@@ -345,13 +369,15 @@
 ! give the determinant represented by ISTRING1. (HPH)
 !
       implicit none
-      integer,intent(in)::IOUT,NBASIS
-      integer,dimension(NBASIS,2),intent(in)::ISTRING1,ISTRING2
-      integer,intent(out)::nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip
-      integer::i,nElChange,nCreation,nAnnihilation,nCreationAlpha,  &
+      integer, intent(in)::IOUT,NBASIS
+      integer, dimension(NBASIS,2),intent(in) :: ISTRING1,ISTRING2
+      integer, intent(out) :: nCAPairs,nCAPairsAlpha,nCAPairsBeta, &
+        nSpinFlip
+      integer :: i,nElChange,nCreation,nAnnihilation,nCreationAlpha, &
         nAnnihilationAlpha,nCreationBeta,nAnnihilationBeta
-      integer,dimension(:,:),allocatable::IStringDiff,creationOp,  &
-        annihilationOp
+      integer, dimension(:,:), allocatable :: IStringDiff
+      integer, dimension(:,:), allocatable, intent(out) :: creationOp, &
+         annihilationOp
       logical::DEBUG=.false.
 !
  1000 Format(1x,'Enter test code...',/,3x,'Here are the two strings & 
@@ -376,8 +402,8 @@
 !
       Allocate(IStringDiff(Nbasis,2),creationOp(NBASIS,2),  &
         annihilationOp(NBASIS,2))
-      IStringDiff    = ISTRING2-ISTRING1
-      creationOp     = 0
+      IStringDiff = ISTRING2-ISTRING1
+      creationOp = 0
       annihilationOp = 0
       do i = 1,NBASIS
         select case(IStringDiff(i,1))
@@ -455,8 +481,9 @@
 ! The subroutine below constructs the overlap sum for the diagonals
 
 
-      Subroutine Form_AlphaBeta_Occ_Overlap(NBASIS,NOCCA,NOCCB,ISTRING,  &
-        SMatrixAO,CALPHA,CBETA,SMatrixAlphaBeta,SSquareSum)
+      Subroutine Form_AlphaBeta_Occ_Overlap(NBASIS,NOCCA,NOCCB, &
+        ISTRING,SMatrixAO,CALPHA,CBETA,SMatrixAlphaBeta, &
+        SMatrixAlphaBeta_2, SSquareSum)
 !
 ! This subroutine forms an alpha-beta overlap between occupied MOs for the
 ! determinant defined by IString.
@@ -465,14 +492,15 @@
 ! Variable Declarations
 !
       implicit none
-      integer,intent(in)::NBASIS,NOCCA,NOCCB
-      integer,dimension(NBASIS,2),intent(in)::ISTRING
-      real,dimension(NBASIS,NBASIS),intent(in)::SMatrixAO,CALPHA,CBETA
-      real,dimension(NOCCA,NOCCB),intent(out)::SMatrixAlphaBeta
-      real,intent(out)::SSquareSum
-      integer::i,ii
-      real,dimension(NBASIS,NOCCA)::TempCAlphaOcc
-      real,dimension(NBasis,NOCCB)::TempCBetaOcc
+      integer, intent(in) :: NBASIS, NOCCA, NOCCB
+      integer, dimension(NBASIS,2), intent(in) :: ISTRING
+      real, dimension(NBASIS,NBASIS), intent(in) :: SMatrixAO, CALPHA, &
+        CBETA
+      real, dimension(NOCCA,NOCCB), intent(out) :: SMatrixAlphaBeta
+      real, intent(out) :: SSquareSum
+      integer :: i,ii
+      real, dimension(NBASIS,NOCCA) :: TempCAlphaOcc
+      real, dimension(NBasis,NOCCB) :: TempCBetaOcc
 !
 ! The starting point is building temporary MO coefficient matrices that run
 ! only over the occupied MOs of the determinant defined by IString.
@@ -497,6 +525,12 @@
 !
       SMatrixAlphaBeta = MatMul(  &
         MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc)
+      
+      ! Second version of matrix to pass out 
+      SMatrixAlphaBeta_2 = MatMul(  &
+        MatMul(Transpose(TempCAlphaOcc),SMatrixAO),TempCBetaOcc)
+
+
       SSquareSum = dot_product(  &
         Reshape(SMatrixAlphaBeta,[NOCCA*NOCCB]),  &
         Reshape(SMatrixAlphaBeta,[NOCCA*NOCCB]))
@@ -504,7 +538,7 @@
       return
       end subroutine Form_AlphaBeta_Occ_Overlap
 
-! A subroutine to print a formatted matrix
+! A subroutine to print a formatted matrix (HPH)
 
       subroutine Print_Matrix_Full_Real(IOUT,AMat,M,N)
 !
@@ -541,6 +575,45 @@
 ! END: subroutines 
 !
 !
+      subroutine general contraction(cOp, aOp, overlapMO_1, &
+        overlapMO_2, overlapSum, NBASIS, string1, string2) 
+
+      implicit none
+      integer :: numCreate, numAnnihilate
+      integer, intent(in) :: NBASIS
+      integer, dimension(:,:), allocatable, intent(in) :: cOp
+      integer, dimension(:,:), allocatable, intent(in) :: aOp
+      real, intent(out) :: overlapSum
+      integer :: r, s     
+
+      real, dimension(:,:), allocatable, intent(in) :: overlapMO_1, & 
+        overlapMO_2
+      
+! I gotta pass the SMatrixAlphaBeta into here...Need 2 versions to
+! replace overlapMO_1 and overlapMO_2 
+!      real, dimension(:,:), allocatable :: Temp_SMatrixOccAB
+!      real, dimension(:,:), allocatable :: Temp_SMatrixOccAB_2
+      
+      integer, dimension(NBASIS,2),intent(in) :: string1, string2
+      
+      numCreate = sum(cOp)
+      numAnnihilate = sum(aOp)
+       
+      overlapSum = 0.0
+
+      do r = 1, NBASIS
+        if (string1(r,:).eq.1) then
+          do s = 1, NBASIS
+            if (string2(s,:).eq.1) then
+              overlapSum = overlapMO_1(numCreate,r) * &
+                 overlapMO_2(numAnnihilate,s) + overlapSum 
+            endif
+          enddo
+        endif
+      enddo
+
+      end subroutine general contraction 
+
 
 
 !CONTINUE RECODING HERE
