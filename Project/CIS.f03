@@ -70,8 +70,7 @@
 ! remember to allocate and deallocate for other SC rule blocks
       integer, dimension(:,:), allocatable :: OverlapSum
 ! passed out of stringsComparison for use in general_contraction      
-      integer, dimension(:,:), allocatable :: COP, &
-         AOP 
+      integer, dimension(:,:), allocatable :: COP, AOP 
 
 
 
@@ -152,11 +151,16 @@
       Write(IOut,*)
       Write(IOut,*)' Sending test code strings 3 and 7...'
 
+! error diagnostics 
 ! Something's wrong in the subroutine stringsComparison, gives seg-fault
+! allocate them in the program??? doesnt seem to work.
+      Allocate(COP(nBasis,2),AOP(nBasis,2))
+! it's not entering stringsComparison...
 
       call stringsComparison(IOut,NBasis,IStrings(:,:,1),  &
-        IStrings(:,:,3),nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip, &
-        COP, AOP)
+        IStrings(:,:,3),nCAPairs,nCAPairsAlpha,nCAPairsBeta, &
+        nSpinFlip, COP, AOP)
+      
       write(IOut,8000) nCAPairsAlpha,nCAPairsBeta,nCAPairs,nSpinFlip
 ! END: testing
 
@@ -359,6 +363,7 @@
       subroutine stringsComparison(IOUT,NBASIS,ISTRING1,ISTRING2, &
         nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip, creationOp, &
         annihilationOp)
+
 !
 ! This routine is used to compare two strings and determine how they
 ! relate to one another in terms of creation-annihilation pairs, 
@@ -374,8 +379,10 @@
       integer :: i,nElChange,nCreation,nAnnihilation,nCreationAlpha, &
         nAnnihilationAlpha,nCreationBeta,nAnnihilationBeta
       integer, dimension(:,:), allocatable :: IStringDiff
-      integer, dimension(:,:), allocatable, intent(out) :: creationOp, &
-         annihilationOp
+      !changed out to inout below
+      !changed allocatable (:,:)
+      integer,dimension(NBASIS,2),intent(inout) :: creationOp
+      integer,dimension(NBASIS,2),intent(inout) :: annihilationOp
       logical::DEBUG=.false.
 !
  1000 Format(1x,'Enter test code...',/,3x,'Here are the two strings & 
@@ -390,6 +397,10 @@
 ! subroutine and then figure out some critical info about how these two
 ! determinants relate to one another.
 !
+
+!error print
+      print*,'Looking for an error in stringsComparison '
+
       if(DEBUG) then
         write(IOUT,1000)
         call printUnrestrictedString(IOUT,NBASIS,-1,ISTRING1)
@@ -398,16 +409,63 @@
 !
 ! build IStringDiff and print it.
 !
-      Allocate(IStringDiff(Nbasis,2),creationOp(NBASIS,2),  &
-        annihilationOp(NBASIS,2))
+
+!error print
+      print*,'Looking for an error in stringsComparison2 '
+
+
+!dont need to allocate AOP and COP
+!      Allocate(IStringDiff(Nbasis,2),creationOp(NBASIS,2),  &
+!       annihilationOp(NBASIS,2))
+!try allocating just istringdiff lol
+      Allocate(IStringDiff(NBASIS,2))
+!error print
+      print*,'Looking for an error in stringsComparison3 '
+
+
+
       IStringDiff = ISTRING2-ISTRING1
-      creationOp = 0
+
+!error print
+      print*,'Looking for an error in stringsComparison4 '
+
       annihilationOp = 0
+      print*,'annihilationOp is the problem!!!! '
+      creationOp = 0
+!error print
+      print*,'Looking for an error in stringsComparison5x4 '
+     ! annihilationOp = 0
+!error print
+      print*,'Looking for an error in stringsComparison6x4 '
+!error print
+      print*,'printing istringdiffbefore ', IStringDiff
+!error print, how many nbasis?
+      write(*,*),' THIS IS NBASIS: ',NBASIS
+
+
       do i = 1,NBASIS
+!error print
+      print*,'printing istringdiffinsideDO ', IStringDiff
+      print*,'printing istringdiffinsideDO ', IStringDiff(i,1),i
         select case(IStringDiff(i,1))
+!error print
+      print*,'printing istringdiffafter ', IStringDiff
+!error print
+      print*,'Looking for an error in stringsComparison7x4 '
+
+
+
         case(-1)
+!error print
+      print*,'looking for error in case(-1) '
+
+
           annihilationOp(i,1) = 1
         case(1)
+!error print
+      print*,'looking for error in case(1) '
+
+
           creationOp(i,1) = 1
         end select
       endDo
