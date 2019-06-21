@@ -493,7 +493,8 @@
       integer, dimension(NBASIS,2), intent(in) :: ISTRING
       real, dimension(NBASIS,NBASIS), intent(in) :: SMatrixAO, CALPHA, &
         CBETA
-      real, dimension(NOCCA,NOCCB), intent(out) :: SMatrixAlphaBeta
+      real, dimension(NOCCA,NOCCB), intent(out) :: SMatrixAlphaBeta, &
+        SMatrixAlphaBeta_2
       real, intent(out) :: SSquareSum
       integer :: i,ii
       real, dimension(NBASIS,NOCCA) :: TempCAlphaOcc
