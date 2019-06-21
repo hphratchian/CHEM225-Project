@@ -192,9 +192,9 @@
 ! placeholder            SSquared(i,j) = float(100)
 ! AZ coding....
                 
-           ! call general_contraction(creationOp, &
-           !   annihilationOp, Temp_SMatrixOccAB, Temp_SMatrixOccAB_2, &
-           !   OverlapSum, nBasis, IStrings(:,:,i), IString2(:,:,j)) 
+            call general_contraction(creationOp, &
+              annihilationOp, Temp_SMatrixOccAB, Temp_SMatrixOccAB_2, &
+              OverlapSum, nBasis, IStrings(:,:,i), IString2(:,:,j)) 
            ! I'm missing the MO coefficient arrays somewhere...
 
 !
