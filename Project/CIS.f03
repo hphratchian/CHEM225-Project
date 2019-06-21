@@ -151,6 +151,9 @@
 ! statement for each value. 
       Write(IOut,*)
       Write(IOut,*)' Sending test code strings 3 and 7...'
+
+! Something's wrong in the subroutine stringsComparison, gives seg-fault
+
       call stringsComparison(IOut,NBasis,IStrings(:,:,1),  &
         IStrings(:,:,3),nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip, &
         COP, AOP)
@@ -195,8 +198,6 @@
             call general_contraction(COP, AOP, Temp_SMatrixOccAB, &
                 Temp_SMatrixOccAB_2, OverlapSum, nBasis, & 
                 IStrings(:,:,i), IStrings(:,:,j)) 
-           ! I'm missing the MO coefficient arrays somewhere...
-
 !
 
 ! SC Rule 3:
