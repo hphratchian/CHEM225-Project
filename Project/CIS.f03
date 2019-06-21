@@ -194,7 +194,7 @@
                 
             call general_contraction(creationOp, &
               annihilationOp, Temp_SMatrixOccAB, Temp_SMatrixOccAB_2, &
-              OverlapSum, nBasis, IStrings(:,:,i), IString2(:,:,j)) 
+              OverlapSum, nBasis, IStrings(:,:,i), IStrings(:,:,j)) 
            ! I'm missing the MO coefficient arrays somewhere...
 
 !
