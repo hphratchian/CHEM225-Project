@@ -355,7 +355,7 @@
 !
 
 
-      subroutine stringsComparison(IOUT,NBASIS,ISTRING1,ISTRING2,
+      subroutine stringsComparison(IOUT,NBASIS,ISTRING1,ISTRING2, &
         nCAPairs,nCAPairsAlpha,nCAPairsBeta,nSpinFlip, creationOp, &
         annihilationOp)
 !
