@@ -591,7 +591,8 @@
 ! replace overlapMO_1 and overlapMO_2 
       
       integer, dimension(NBASIS,2),intent(in) :: string1, string2
-     
+      integer :: positionAlpha_1, positionAlpha_2, positionBeta_1, &
+        positionBeta_2
  
       numCreate = sum(cOp)
       numAnnihilate = sum(aOp)
@@ -599,9 +600,13 @@
       overlapSum = 0.0
 
       do r = 1, NBASIS
-        if (string1(r,:).eq.1) then
+        positionAlpha_1 = string1(r,1)
+        positionBeta_1 = string1(r,2)
+        if (positionAlpha_1.eq.1 .or. positionBeta_1.eq.1) then
           do s = 1, NBASIS
-            if (string2(s,:).eq.1) then
+            positionAlpha_2 = string2(s,1)
+            positionBeta_2 = string2(s,2)
+            if (positionAlpha_2.eq.1 .or. positionBeta_2.eq.1) then
               overlapSum = overlapMO_1(numCreate,r) * &
                  overlapMO_2(numAnnihilate,s) + overlapSum 
             endif
