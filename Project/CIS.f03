@@ -69,7 +69,7 @@
 ! a new definition of the overlap sum term in <S^2>
 ! remember to allocate and deallocate for other SC rule blocks
       integer, dimension(:,:), allocatable :: OverlapSum
-! passed out of stringsComparison for use in general contraction      
+! passed out of stringsComparison for use in general_contraction      
       integer, dimension(:,:), allocatable :: COP, &
          AOP 
 
@@ -192,7 +192,7 @@
 ! placeholder            SSquared(i,j) = float(100)
 ! AZ coding....
                 
-           ! call general contraction(creationOp, &
+           ! call general_contraction(creationOp, &
            !   annihilationOp, Temp_SMatrixOccAB, Temp_SMatrixOccAB_2, &
            !   OverlapSum, nBasis, IStrings(:,:,i), IString2(:,:,j)) 
            ! I'm missing the MO coefficient arrays somewhere...
@@ -572,7 +572,7 @@
 ! END: subroutines 
 !
 !
-      subroutine general contraction(cOp, aOp, overlapMO_1, &
+      subroutine general_contraction(cOp, aOp, overlapMO_1, &
         overlapMO_2, overlapSum, NBASIS, string1, string2) 
 
       implicit none
@@ -608,7 +608,7 @@
         endif
       enddo
 
-      end subroutine general contraction 
+      end subroutine general_contraction 
 
 
 
