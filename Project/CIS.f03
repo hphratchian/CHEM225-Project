@@ -68,7 +68,7 @@
 
 ! a new definition of the overlap sum term in <S^2>
 ! remember to allocate and deallocate for other SC rule blocks
-      integer, dimension(:,:), allocatable :: OverlapSum
+      real :: OverlapSum
 ! passed out of stringsComparison for use in general_contraction      
       integer, dimension(:,:), allocatable :: COP, AOP 
 
@@ -170,12 +170,24 @@
 !
 
 ! remember to allocate and deallocate the temp matrices!
- 
+!error print 
+      print*,'is the loop working?'
+
       do i = 1,NDet
         do j = 1,NDet
           call stringsComparison(IOut,NBasis,IStrings(:,:,i),  &
             IStrings(:,:,j),nCAPairs,nCAPairsAlpha,nCAPairsBeta,  &
             nSpinFlip, COP, AOP)
+!error print
+        print*,'exiting stringsComparison '
+!error print
+        print*,'printing nCAPairs ',nCAPairs
+        print*,'printing nSpinFlip ',nSpinFlip
+        print*,'printing i ',i
+        print*,'printing j ',j        
+
+
+
           if(nSpinFlip.gt.0.or.nCAPairs.gt.2) then
             SSquared(i,j) = float(0)
 ! SC Rule 1:
@@ -184,25 +196,68 @@
                 but i.ne.j.?')
             call stringNOcc(NBasis,IStrings(:,:,i),nOccAlphaTemp,  &
               nOccBetaTemp,SzTemp)
+! error print
+        print*,'istrings from stringnocc: ',IStrings(:,:,i) 
+
             allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
+!forgot to allocate 2nd temp matrix
+        allocate(Temp_SMatrixOccAB_2(nOccAlphaTemp,nOccBetaTemp))
+
             call Form_AlphaBeta_Occ_Overlap(NBasis,nOccAlphaTemp,  &
               nOccBetaTemp,IStrings(:,:,i),SMatrixAO,CAlpha,CBeta,  &
               Temp_SMatrixOccAB, Temp_SMatrixOccAB_2,SSquareSum)
+!error print
+        print*,'after calling form alphabetaoccoverlap...'
+
+
             SSquared(i,j) = SzTemp*(SzTemp+float(1)) +  &
               float(nOccBetaTemp) - SSquareSum
 ! placeholder          SSquared(i,j) = float(10)
             deallocate(Temp_SMatrixOccAB)
+!deallocate 2nd temp matrix
+            deallocate(Temp_SMatrixOccAB_2)
+
+
+
 !SC Rule 2:
           elseIf(nCAPairs.eq.1) then
             if(i.eq.j) call die('Should be off-diagonal element, &
                  but i.eq.j. ?')
 ! placeholder            SSquared(i,j) = float(100)
 ! AZ coding....
-                
+
+!error print
+        print*,'Before entering my contraction routine... '           
+
+!remember to allocate and deallocate the temp MO overlaps...
+
+        allocate(Temp_SMatrixOccAB(nOccAlphaTemp,nOccBetaTemp))
+!forgot to allocate 2nd temp matrix
+        allocate(Temp_SMatrixOccAB_2(nOccAlphaTemp,nOccBetaTemp))
+
+!try swapping i and j, s^2 should be hermitian... 
+
             call general_contraction(COP, AOP, Temp_SMatrixOccAB, &
                 Temp_SMatrixOccAB_2, OverlapSum, nBasis, & 
-                IStrings(:,:,i), IStrings(:,:,j)) 
+                IStrings(:,:,i), IStrings(:,:,j), &
+                nOccAlpha, nOccBeta) 
 !
+
+!error print
+        print*,'printing i after calling gen_contract ',i       
+        print*,'printing j after calling gen_contract ',j
+
+        SSquared(i,j) = SzTemp*(SzTemp+float(1)) +  &
+              float(nOccBetaTemp) - OverlapSum
+
+!error print
+        print*,'printing ssquare(i,j)',SSquared(i,j)
+
+
+
+            deallocate(Temp_SMatrixOccAB)
+!deallocate 2nd temp matrix
+            deallocate(Temp_SMatrixOccAB_2)
 
 ! SC Rule 3:
           elseIf(nCAPairs.eq.2) then
@@ -422,9 +477,16 @@
 !error print
       print*,'Looking for an error in stringsComparison3 '
 
-
+!error print
+      print*,'printing istring2 ',ISTRING2(1,1)
+!error print
+      print*,'printing istring1 ',ISTRING1(1,2)
+!HA it looks like ISTRING 1 and 2 are both the reference determinant
+!I need to pass all possible determinants(singles here) to get the cases
 
       IStringDiff = ISTRING2-ISTRING1
+!error print
+      print*,'printing istringdiff=istring2-istring1 ',IStringDiff
 
 !error print
       print*,'Looking for an error in stringsComparison4 '
@@ -446,7 +508,9 @@
       do i = 1,NBASIS
 !error print
       print*,'printing istringdiffinsideDO ', IStringDiff
-      print*,'printing istringdiffinsideDO ', IStringDiff(i,1),i
+      print*,'printing istringdiffinsideDO ', IStringDiff(i,1)
+      print*,'printing i',i
+
         select case(IStringDiff(i,1))
 !error print
       print*,'printing istringdiffafter ', IStringDiff
@@ -469,14 +533,21 @@
           creationOp(i,1) = 1
         end select
       endDo
+!beta loops
       do i = 1,NBASIS
+!error print
+        print*,'entering beta comparisons... '
+!it was saving to the alpha index, it's fixed.     
         select case(IStringDiff(i,2))
         case(-1)
-          annihilationOp(i,1) = 1
+          annihilationOp(i,2) = 1
         case(1)
-          creationOp(i,1) = 1
+          creationOp(i,2) = 1
         end select
       endDo
+!error print
+        print*,'exiting beta comparisons... '
+! THE ERROR IS DOWN HERE VVVVVVV
       if(DEBUG) then
         write(IOUT,1100)
         call printUnrestrictedString(IOUT,NBASIS,-1,creationOp)
@@ -633,17 +704,20 @@
 !
 !
       subroutine general_contraction(cOp, aOp, overlapMO_1, &
-        overlapMO_2, overlapSum, NBASIS, string1, string2) 
+        overlapMO_2, overlapSum, NBASIS, string1, string2, &
+        NOCCA, NOCCB) 
 
       implicit none
+!forgot to add dimensions for overlapmo: cant allocate when fixed
+      integer, intent(in) :: NOCCA, NOCCB
       integer :: numCreate, numAnnihilate
       integer, intent(in) :: NBASIS
-      integer, dimension(:,:), allocatable, intent(in) :: cOp
-      integer, dimension(:,:), allocatable, intent(in) :: aOp
+      integer, dimension(NBASIS,2), intent(in) :: cOp
+      integer, dimension(NBASIS,2), intent(in) :: aOp
       real, intent(out) :: overlapSum
       integer :: r, s     
-
-      real, dimension(:,:), allocatable, intent(in) :: overlapMO_1, & 
+!change from :, : to nocca, noccb
+      real, dimension(NOCCA,NOCCB), intent(in) :: overlapMO_1, & 
         overlapMO_2
       
 ! I gotta pass the SMatrixAlphaBeta into here...Need 2 versions to
@@ -653,16 +727,50 @@
       integer :: positionAlpha_1, positionAlpha_2, positionBeta_1, &
         positionBeta_2
  
+!error print
+        print*, 'before defining numcreate, numan, and overlapsum'
+
+!error print
+        print*, 'cOp passed in ',cOp
+!error print 
+        print*, 'aOp passed in ',aOp
+
       numCreate = sum(cOp)
+
+!error print
+        print*,'numcreate',numcreate
+        
       numAnnihilate = sum(aOp)
+
+!error print
+        print*,'numAnnihilate',numAnnihilate
+
+!error print 
+        print*,'overlapsumbefore ',overlapSum
        
       overlapSum = 0.0
+
+!error print
+        print*, 'print string1 before loop ',string1
+        print*,'print string2 before loop ',string2
 
       do r = 1, NBASIS
         positionAlpha_1 = string1(r,1)
         positionBeta_1 = string1(r,2)
+
+
+!error print
+        print*, 'inside first do loop with r'
+!error print
+        print*, 'print string1 in loop r ',string1
+        print*,'print string2 in loop r ',string2
+
+
         if (positionAlpha_1.eq.1 .or. positionBeta_1.eq.1) then
           do s = 1, NBASIS
+!error print
+        print*, 'inside first do loop with s'
+
             positionAlpha_2 = string2(s,1)
             positionBeta_2 = string2(s,2)
             if (positionAlpha_2.eq.1 .or. positionBeta_2.eq.1) then
@@ -672,6 +780,10 @@
           enddo
         endif
       enddo
+
+!error print
+        print*, 'at the end of do loops, exit gen_contract'
+
 
       end subroutine general_contraction 
 

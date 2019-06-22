@@ -1,0 +1,560 @@
+ Enter SSquared.
+   Matrix File: GTest/test001.mat
+
+ nAlpha=   1  nBeta=   1  nMOs=    2
+ nOccAlpha =,   1  nOccBeta =   1
+ nVirtAlpha=    1  nVirtBeta=    1
+ nDet=    3
+ Label                                SHELL TO ATOM MAP NI= 1 NR= 0 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                      SHELL TYPES NI= 1 NR= 0 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                   NUMBER OF PRIMITIVES PER SHELL NI= 1 NR= 0 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                              PRIMITIVE EXPONENTS NI= 0 NR= 1 NRI=1 NTot=       6 LenBuf=    4000 N=     6     1     1     1     1 ASym=F LR=    6
+ Label                         CONTRACTION COEFFICIENTS NI= 0 NR= 1 NRI=1 NTot=       6 LenBuf=    4000 N=     6     1     1     1     1 ASym=F LR=    6
+ Label                  P(S=P) CONTRACTION COEFFICIENTS NI= 0 NR= 1 NRI=1 NTot=       6 LenBuf=    4000 N=     6     1     1     1     1 ASym=F LR=    6
+ Label                        COORDINATES OF EACH SHELL NI= 0 NR= 1 NRI=1 NTot=       6 LenBuf=    4000 N=     6     1     1     1     1 ASym=F LR=    6
+ Label                                 GAUSSIAN SCALARS NI= 1 NR= 1 NRI=1 NTot=      11 LenBuf=    2000 N=  1000     1     1     1     1 ASym=F LR= 1000
+ Label                                      INTEGER ISO NI= 1 NR= 0 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                     INTEGER SPIN NI= 1 NR= 0 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                  REAL ZEFFECTIVE NI= 0 NR= 1 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                     REAL GFACTOR NI= 0 NR= 1 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                    REAL ZNUCLEAR NI= 0 NR= 1 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                 MULLIKEN CHARGES NI= 0 NR= 1 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                                 NUCLEAR GRADIENT NI= 0 NR= 1 NRI=1 NTot=       6 LenBuf=    4000 N=     3     2     1     1     1 ASym=F LR=    6
+ Label                           ELECTRIC DIPOLE MOMENT NI= 0 NR= 1 NRI=1 NTot=       3 LenBuf=    4000 N=     3     1     1     1     1 ASym=F LR=    3
+ Label                           NON-ADIABATIC COUPLING NI= 0 NR= 1 NRI=1 NTot=       6 LenBuf=    4000 N=     3     2     1     1     1 ASym=F LR=    6
+ Label                                          OVERLAP NI= 0 NR= 1 NRI=1 NTot=       3 LenBuf=    4000 N=    -2     2     1     1     1 ASym=F LR=    3
+
+ Overlap Matrix
+                  1             2
+       1      1.000000      0.256786
+       2      0.256786      1.000000
+ Label                           CORE HAMILTONIAN ALPHA NI= 0 NR= 1 NRI=1 NTot=       3 LenBuf=    4000 N=    -2     2     1     1     1 ASym=F LR=    3
+ Label                            CORE HAMILTONIAN BETA NI= 0 NR= 1 NRI=1 NTot=       3 LenBuf=    4000 N=    -2     2     1     1     1 ASym=F LR=    3
+ Label                                   KINETIC ENERGY NI= 0 NR= 1 NRI=1 NTot=       3 LenBuf=    4000 N=    -2     2     1     1     1 ASym=F LR=    3
+ Label                                 ORTHOGONAL BASIS NI= 0 NR= 1 NRI=1 NTot=       4 LenBuf=    4000 N=     2     2     1     1     1 ASym=F LR=    4
+ Label                                 DIPOLE INTEGRALS NI= 0 NR= 1 NRI=1 NTot=       9 LenBuf=    4000 N=    -2     2     3     1     1 ASym=F LR=    9
+ Label                                DIP VEL INTEGRALS NI= 0 NR= 1 NRI=1 NTot=       9 LenBuf=    4000 N=    -2     2     3     1     1 ASym=T LR=    9
+ Label                                R X DEL INTEGRALS NI= 0 NR= 1 NRI=1 NTot=       9 LenBuf=    4000 N=    -2     2     3     1     1 ASym=T LR=    9
+ Label                           ALPHA ORBITAL ENERGIES NI= 0 NR= 1 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                            BETA ORBITAL ENERGIES NI= 0 NR= 1 NRI=1 NTot=       2 LenBuf=    4000 N=     2     1     1     1     1 ASym=F LR=    2
+ Label                            ALPHA MO COEFFICIENTS NI= 0 NR= 1 NRI=1 NTot=       4 LenBuf=    4000 N=     2     2     1     1     1 ASym=F LR=    4
+ Label                             BETA MO COEFFICIENTS NI= 0 NR= 1 NRI=1 NTot=       4 LenBuf=    4000 N=     2     2     1     1     1 ASym=F LR=    4
+
+ MO Coefficients, ALPHA
+                  1             2
+       1      0.943734     -0.424218
+       2      0.167655      1.021022
+
+ MO Coefficients, BETA
+                  1             2
+       1      0.167655      1.021022
+       2      0.943734     -0.424218
+ 
+ |  1 > :  10 | 10
+ |  2 > :  01 | 10
+ |  3 > :  10 | 01
+ 
+ 
+  Sending test code strings 3 and 7...
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                         0 
+                        0                       -1                        1
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         0                        0 
+                       -1                        1
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         0 
+                        0                       -1                        1
+ printing istringdiffinsideDO                         0
+ printing i                        1
+ printing istringdiffafter                         0                        0 
+                       -1                        1
+ Looking for an error in stringsComparison7x4 
+ printing istringdiffinsideDO                         0 
+                        0                       -1                        1
+ printing istringdiffinsideDO                         0
+ printing i                        2
+ printing istringdiffafter                         0                        0 
+                       -1                        1
+ Looking for an error in stringsComparison7x4 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ Number of ALPHA creation/annihilation pairs:     0
+ Number of BETA  creation/annihilation pairs:     1
+ Number of TOTAL creation/annihilation pairs:     1
+ Number of SPIN FLIP pairs                  :     0
+ is the loop working?
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                         0 
+                        0                        0                        0
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         0                        0 
+                        0                        0
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         0 
+                        0                        0                        0
+ printing istringdiffinsideDO                         0
+ printing i                        1
+ printing istringdiffafter                         0                        0 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ printing istringdiffinsideDO                         0 
+                        0                        0                        0
+ printing istringdiffinsideDO                         0
+ printing i                        2
+ printing istringdiffafter                         0                        0 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         0
+ printing nSpinFlip                         0
+ printing i                         1
+ printing j                         1
+ istrings from stringnocc:                         1                        0 
+                        1                        0
+ after calling form alphabetaoccoverlap...
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         0
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                        -1 
+                        1                        0                        0
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                        -1                        1 
+                        0                        0
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                        -1 
+                        1                        0                        0
+ printing istringdiffinsideDO                        -1
+ printing i                        1
+ printing istringdiffafter                        -1                        1 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(-1) 
+ printing istringdiffinsideDO                        -1 
+                        1                        0                        0
+ printing istringdiffinsideDO                         1
+ printing i                        2
+ printing istringdiffafter                        -1                        1 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(1) 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         1
+ printing nSpinFlip                         0
+ printing i                         1
+ printing j                         2
+ Before entering my contraction routine... 
+ before defining numcreate, numan, and overlapsum
+ cOp passed in                         0                        1 
+                        0                        0
+ aOp passed in                         1                        0 
+                        0                        0
+ numcreate                        1
+ numAnnihilate                        1
+ overlapsumbefore     0.000000000000000     
+ print string1 before loop                         1                        0 
+                        1                        0
+ print string2 before loop                         0                        1 
+                        1                        0
+ inside first do loop with r
+ print string1 in loop r                         1                        0 
+                        1                        0
+ print string2 in loop r                         0                        1 
+                        1                        0
+ inside first do loop with s
+ inside first do loop with s
+ inside first do loop with r
+ print string1 in loop r                         1                        0 
+                        1                        0
+ print string2 in loop r                         0                        1 
+                        1                        0
+ at the end of do loops, exit gen_contract
+ printing i after calling gen_contract                         1
+ printing j after calling gen_contract                         2
+ printing ssquare(i,j)   0.3861082498432018     
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                         0 
+                        0                       -1                        1
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         0                        0 
+                       -1                        1
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         0 
+                        0                       -1                        1
+ printing istringdiffinsideDO                         0
+ printing i                        1
+ printing istringdiffafter                         0                        0 
+                       -1                        1
+ Looking for an error in stringsComparison7x4 
+ printing istringdiffinsideDO                         0 
+                        0                       -1                        1
+ printing istringdiffinsideDO                         0
+ printing i                        2
+ printing istringdiffafter                         0                        0 
+                       -1                        1
+ Looking for an error in stringsComparison7x4 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         1
+ printing nSpinFlip                         0
+ printing i                         1
+ printing j                         3
+ Before entering my contraction routine... 
+ before defining numcreate, numan, and overlapsum
+ cOp passed in                         0                        0 
+                        0                        1
+ aOp passed in                         0                        0 
+                        1                        0
+ numcreate                        1
+ numAnnihilate                        1
+ overlapsumbefore    0.6138917501567982     
+ print string1 before loop                         1                        0 
+                        1                        0
+ print string2 before loop                         1                        0 
+                        0                        1
+ inside first do loop with r
+ print string1 in loop r                         1                        0 
+                        1                        0
+ print string2 in loop r                         1                        0 
+                        0                        1
+ inside first do loop with s
+ inside first do loop with s
+ inside first do loop with r
+ print string1 in loop r                         1                        0 
+                        1                        0
+ print string2 in loop r                         1                        0 
+                        0                        1
+ at the end of do loops, exit gen_contract
+ printing i after calling gen_contract                         1
+ printing j after calling gen_contract                         3
+ printing ssquare(i,j)   0.9073931009584977     
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                         1 
+                       -1                        0                        0
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         1                       -1 
+                        0                        0
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         1 
+                       -1                        0                        0
+ printing istringdiffinsideDO                         1
+ printing i                        1
+ printing istringdiffafter                         1                       -1 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(1) 
+ printing istringdiffinsideDO                         1 
+                       -1                        0                        0
+ printing istringdiffinsideDO                        -1
+ printing i                        2
+ printing istringdiffafter                         1                       -1 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(-1) 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         1
+ printing nSpinFlip                         0
+ printing i                         2
+ printing j                         1
+ Before entering my contraction routine... 
+ before defining numcreate, numan, and overlapsum
+ cOp passed in                         1                        0 
+                        0                        0
+ aOp passed in                         0                        1 
+                        0                        0
+ numcreate                        1
+ numAnnihilate                        1
+ overlapsumbefore    9.2606899041502266E-002
+ print string1 before loop                         0                        1 
+                        1                        0
+ print string2 before loop                         1                        0 
+                        1                        0
+ inside first do loop with r
+ print string1 in loop r                         0                        1 
+                        1                        0
+ print string2 in loop r                         1                        0 
+                        1                        0
+ inside first do loop with s
+ inside first do loop with s
+ inside first do loop with r
+ print string1 in loop r                         0                        1 
+                        1                        0
+ print string2 in loop r                         1                        0 
+                        1                        0
+ inside first do loop with s
+ inside first do loop with s
+ at the end of do loops, exit gen_contract
+ printing i after calling gen_contract                         2
+ printing j after calling gen_contract                         1
+ printing ssquare(i,j)   0.9073931009584977     
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         0
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                         0 
+                        0                        0                        0
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         0                        0 
+                        0                        0
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         0 
+                        0                        0                        0
+ printing istringdiffinsideDO                         0
+ printing i                        1
+ printing istringdiffafter                         0                        0 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ printing istringdiffinsideDO                         0 
+                        0                        0                        0
+ printing istringdiffinsideDO                         0
+ printing i                        2
+ printing istringdiffafter                         0                        0 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         0
+ printing nSpinFlip                         0
+ printing i                         2
+ printing j                         2
+ istrings from stringnocc:                         0                        1 
+                        1                        0
+ after calling form alphabetaoccoverlap...
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         1
+ printing istringdiff=istring2-istring1                         1 
+                       -1                       -1                        1
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         1                       -1 
+                       -1                        1
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         1 
+                       -1                       -1                        1
+ printing istringdiffinsideDO                         1
+ printing i                        1
+ printing istringdiffafter                         1                       -1 
+                       -1                        1
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(1) 
+ printing istringdiffinsideDO                         1 
+                       -1                       -1                        1
+ printing istringdiffinsideDO                        -1
+ printing i                        2
+ printing istringdiffafter                         1                       -1 
+                       -1                        1
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(-1) 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         2
+ printing nSpinFlip                         0
+ printing i                         2
+ printing j                         3
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         0
+ printing istringdiff=istring2-istring1                         0 
+                        0                        1                       -1
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         0                        0 
+                        1                       -1
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         0 
+                        0                        1                       -1
+ printing istringdiffinsideDO                         0
+ printing i                        1
+ printing istringdiffafter                         0                        0 
+                        1                       -1
+ Looking for an error in stringsComparison7x4 
+ printing istringdiffinsideDO                         0 
+                        0                        1                       -1
+ printing istringdiffinsideDO                         0
+ printing i                        2
+ printing istringdiffafter                         0                        0 
+                        1                       -1
+ Looking for an error in stringsComparison7x4 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         1
+ printing nSpinFlip                         0
+ printing i                         3
+ printing j                         1
+ Before entering my contraction routine... 
+ before defining numcreate, numan, and overlapsum
+ cOp passed in                         0                        0 
+                        1                        0
+ aOp passed in                         0                        0 
+                        0                        1
+ numcreate                        1
+ numAnnihilate                        1
+ overlapsumbefore    9.2606899041502266E-002
+ print string1 before loop                         1                        0 
+                        0                        1
+ print string2 before loop                         1                        0 
+                        1                        0
+ inside first do loop with r
+ print string1 in loop r                         1                        0 
+                        0                        1
+ print string2 in loop r                         1                        0 
+                        1                        0
+ inside first do loop with s
+ inside first do loop with s
+ inside first do loop with r
+ print string1 in loop r                         1                        0 
+                        0                        1
+ print string2 in loop r                         1                        0 
+                        1                        0
+ inside first do loop with s
+ inside first do loop with s
+ at the end of do loops, exit gen_contract
+ printing i after calling gen_contract                         3
+ printing j after calling gen_contract                         1
+ printing ssquare(i,j)   0.3051064352313240     
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         0
+ printing istring1                         0
+ printing istringdiff=istring2-istring1                        -1 
+                        1                        1                       -1
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                        -1                        1 
+                        1                       -1
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                        -1 
+                        1                        1                       -1
+ printing istringdiffinsideDO                        -1
+ printing i                        1
+ printing istringdiffafter                        -1                        1 
+                        1                       -1
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(-1) 
+ printing istringdiffinsideDO                        -1 
+                        1                        1                       -1
+ printing istringdiffinsideDO                         1
+ printing i                        2
+ printing istringdiffafter                        -1                        1 
+                        1                       -1
+ Looking for an error in stringsComparison7x4 
+ looking for error in case(1) 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         2
+ printing nSpinFlip                         0
+ printing i                         3
+ printing j                         2
+ Looking for an error in stringsComparison 
+ Looking for an error in stringsComparison2 
+ Looking for an error in stringsComparison3 
+ printing istring2                         1
+ printing istring1                         0
+ printing istringdiff=istring2-istring1                         0 
+                        0                        0                        0
+ Looking for an error in stringsComparison4 
+ annihilationOp is the problem!!!! 
+ Looking for an error in stringsComparison5x4 
+ Looking for an error in stringsComparison6x4 
+ printing istringdiffbefore                         0                        0 
+                        0                        0
+  THIS IS NBASIS:                         2
+ printing istringdiffinsideDO                         0 
+                        0                        0                        0
+ printing istringdiffinsideDO                         0
+ printing i                        1
+ printing istringdiffafter                         0                        0 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ printing istringdiffinsideDO                         0 
+                        0                        0                        0
+ printing istringdiffinsideDO                         0
+ printing i                        2
+ printing istringdiffafter                         0                        0 
+                        0                        0
+ Looking for an error in stringsComparison7x4 
+ entering beta comparisons... 
+ entering beta comparisons... 
+ exiting beta comparisons... 
+ exiting stringsComparison 
+ printing nCAPairs                         0
+ printing nSpinFlip                         0
+ printing i                         3
+ printing j                         3
+ istrings from stringnocc:                         1                        0 
+                        0                        1
+ after calling form alphabetaoccoverlap...
+  Done building the S^2 matrix...
+                  1             2             3
+       1      0.694894      0.386108      0.907393
+       2      0.907393      0.305106      0.000000
+       3      0.305106      0.000000      0.305106
