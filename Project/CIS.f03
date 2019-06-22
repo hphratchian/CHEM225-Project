@@ -22,7 +22,7 @@
 !
 ! A.Zamani
 !
-! Last Updated 6/20/19
+! Last Updated 6/21/19
 
 
 
@@ -124,6 +124,17 @@
       SMatrixAO = overlapAO_MQC
       cAlpha = cAlpha_MQC
       cBeta = cBeta_MQC
+
+
+!error print
+      SMatrixAO(1,3) = float(360420)
+      print*,'printing SMatrixAO from mqc  ',SMatrixAO
+      print*,'printing SMatrixAO full REAL '
+      call Print_Matrix_Full_Real(IOut,SMatrixAO,nBasis,nBasis)
+!is it different? how is it packed? do we need to transpose?
+
+
+
 
 ! START: conditional that requires the # of basis fxns to be
 ! greater than the # of alpha or beta electrons.
@@ -236,12 +247,17 @@
         allocate(Temp_SMatrixOccAB_2(nOccAlphaTemp,nOccBetaTemp))
 
 !try swapping i and j, s^2 should be hermitian... 
+!swapping them changes the <s^2> value, check indexing in
+!general_contraction indexing is wrong, do by hand and check the
+!indexing for SAO and CMOs pulled from MQC. Remember, the SAO 
+!matrix is initially constructed in a row-wise vector. Fix it!!!
+
 
             call general_contraction(COP, AOP, Temp_SMatrixOccAB, &
                 Temp_SMatrixOccAB_2, OverlapSum, nBasis, & 
-                IStrings(:,:,i), IStrings(:,:,j), &
+                IStrings(:,:,j), IStrings(:,:,i), &
                 nOccAlpha, nOccBeta) 
-!
+
 
 !error print
         print*,'printing i after calling gen_contract ',i       
@@ -251,7 +267,7 @@
               float(nOccBetaTemp) - OverlapSum
 
 !error print
-        print*,'printing ssquare(i,j)',SSquared(i,j)
+        print*,'printing ssquared(i,j)',SSquared(i,j)
 
 
 

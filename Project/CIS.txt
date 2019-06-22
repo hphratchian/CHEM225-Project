@@ -49,6 +49,12 @@
                   1             2
        1      0.167655      1.021022
        2      0.943734     -0.424218
+ printing SMatrixAO from mqc      1.000000000000000      
+   0.2567863332683695        0.2567863332683695         1.000000000000000     
+ printing SMatrixAO full REAL 
+                  1             2
+       1      1.000000      0.256786
+       2      0.256786      1.000000
  
  |  1 > :  10 | 10
  |  2 > :  01 | 10
@@ -178,26 +184,28 @@
  numcreate                        1
  numAnnihilate                        1
  overlapsumbefore     0.000000000000000     
- print string1 before loop                         1                        0 
+ print string1 before loop                         0                        1 
                         1                        0
- print string2 before loop                         0                        1 
+ print string2 before loop                         1                        0 
                         1                        0
  inside first do loop with r
- print string1 in loop r                         1                        0 
+ print string1 in loop r                         0                        1 
                         1                        0
- print string2 in loop r                         0                        1 
+ print string2 in loop r                         1                        0 
                         1                        0
  inside first do loop with s
  inside first do loop with s
  inside first do loop with r
- print string1 in loop r                         1                        0 
+ print string1 in loop r                         0                        1 
                         1                        0
- print string2 in loop r                         0                        1 
+ print string2 in loop r                         1                        0 
                         1                        0
+ inside first do loop with s
+ inside first do loop with s
  at the end of do loops, exit gen_contract
  printing i after calling gen_contract                         1
  printing j after calling gen_contract                         2
- printing ssquare(i,j)   0.3861082498432018     
+ printing ssquared(i,j)   0.4787151488847041     
  Looking for an error in stringsComparison 
  Looking for an error in stringsComparison2 
  Looking for an error in stringsComparison3 
@@ -242,27 +250,29 @@
                         1                        0
  numcreate                        1
  numAnnihilate                        1
- overlapsumbefore    0.6138917501567982     
+ overlapsumbefore    0.5212848511152959     
  print string1 before loop                         1                        0 
-                        1                        0
+                        0                        1
  print string2 before loop                         1                        0 
-                        0                        1
+                        1                        0
  inside first do loop with r
  print string1 in loop r                         1                        0 
-                        1                        0
- print string2 in loop r                         1                        0 
                         0                        1
+ print string2 in loop r                         1                        0 
+                        1                        0
  inside first do loop with s
  inside first do loop with s
  inside first do loop with r
  print string1 in loop r                         1                        0 
-                        1                        0
- print string2 in loop r                         1                        0 
                         0                        1
+ print string2 in loop r                         1                        0 
+                        1                        0
+ inside first do loop with s
+ inside first do loop with s
  at the end of do loops, exit gen_contract
  printing i after calling gen_contract                         1
  printing j after calling gen_contract                         3
- printing ssquare(i,j)   0.9073931009584977     
+ printing ssquared(i,j)   0.3861082498432018     
  Looking for an error in stringsComparison 
  Looking for an error in stringsComparison2 
  Looking for an error in stringsComparison3 
@@ -309,29 +319,27 @@
                         0                        0
  numcreate                        1
  numAnnihilate                        1
- overlapsumbefore    9.2606899041502266E-002
- print string1 before loop                         0                        1 
+ overlapsumbefore    0.6138917501567982     
+ print string1 before loop                         1                        0 
                         1                        0
- print string2 before loop                         1                        0 
+ print string2 before loop                         0                        1 
                         1                        0
  inside first do loop with r
- print string1 in loop r                         0                        1 
+ print string1 in loop r                         1                        0 
                         1                        0
- print string2 in loop r                         1                        0 
+ print string2 in loop r                         0                        1 
                         1                        0
  inside first do loop with s
  inside first do loop with s
  inside first do loop with r
- print string1 in loop r                         0                        1 
+ print string1 in loop r                         1                        0 
                         1                        0
- print string2 in loop r                         1                        0 
+ print string2 in loop r                         0                        1 
                         1                        0
- inside first do loop with s
- inside first do loop with s
  at the end of do loops, exit gen_contract
  printing i after calling gen_contract                         2
  printing j after calling gen_contract                         1
- printing ssquare(i,j)   0.9073931009584977     
+ printing ssquared(i,j)   0.3861082498432018     
  Looking for an error in stringsComparison 
  Looking for an error in stringsComparison2 
  Looking for an error in stringsComparison3 
@@ -453,29 +461,27 @@
                         0                        1
  numcreate                        1
  numAnnihilate                        1
- overlapsumbefore    9.2606899041502266E-002
+ overlapsumbefore    0.6138917501567982     
  print string1 before loop                         1                        0 
-                        0                        1
+                        1                        0
  print string2 before loop                         1                        0 
-                        1                        0
+                        0                        1
  inside first do loop with r
  print string1 in loop r                         1                        0 
-                        0                        1
- print string2 in loop r                         1                        0 
                         1                        0
+ print string2 in loop r                         1                        0 
+                        0                        1
  inside first do loop with s
  inside first do loop with s
  inside first do loop with r
  print string1 in loop r                         1                        0 
-                        0                        1
- print string2 in loop r                         1                        0 
                         1                        0
- inside first do loop with s
- inside first do loop with s
+ print string2 in loop r                         1                        0 
+                        0                        1
  at the end of do loops, exit gen_contract
  printing i after calling gen_contract                         3
  printing j after calling gen_contract                         1
- printing ssquare(i,j)   0.3051064352313240     
+ printing ssquared(i,j)   0.1653483946951707     
  Looking for an error in stringsComparison 
  Looking for an error in stringsComparison2 
  Looking for an error in stringsComparison3 
@@ -555,6 +561,6 @@
  after calling form alphabetaoccoverlap...
   Done building the S^2 matrix...
                   1             2             3
-       1      0.694894      0.386108      0.907393
-       2      0.907393      0.305106      0.000000
-       3      0.305106      0.000000      0.305106
+       1      0.694894      0.478715      0.386108
+       2      0.386108      0.305106      0.000000
+       3      0.165348      0.000000      0.305106
