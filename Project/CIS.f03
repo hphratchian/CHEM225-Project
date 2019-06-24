@@ -131,6 +131,16 @@
       print*,'printing SMatrixAO from mqc  ',SMatrixAO
       print*,'printing SMatrixAO full REAL '
       call Print_Matrix_Full_Real(IOut,SMatrixAO,nBasis,nBasis)
+!error print
+      cAlpha(1,3) = float(360420)
+      print*,'printing cAlpha from mqc  ',cAlpha
+      print*,'printing cAlpha full REAL '
+      call Print_Matrix_Full_Real(IOut,cAlpha,nBasis,nBasis)
+!error print
+      cBeta(1,3) = float(360420)
+      print*,'printing cBeta from mqc  ',cBeta
+      print*,'printing cBeta full REAL '
+      call Print_Matrix_Full_Real(IOut,cBeta,nBasis,nBasis)
 !is it different? how is it packed? do we need to transpose?
 
 
@@ -255,7 +265,7 @@
 
             call general_contraction(COP, AOP, Temp_SMatrixOccAB, &
                 Temp_SMatrixOccAB_2, OverlapSum, nBasis, & 
-                IStrings(:,:,j), IStrings(:,:,i), &
+                IStrings(:,:,i), IStrings(:,:,j), &
                 nOccAlpha, nOccBeta) 
 
 
@@ -769,6 +779,8 @@
 !error print
         print*, 'print string1 before loop ',string1
         print*,'print string2 before loop ',string2
+
+!try swapping r and s (original r=1, NBASIS...) [6/24/19]
 
       do r = 1, NBASIS
         positionAlpha_1 = string1(r,1)
