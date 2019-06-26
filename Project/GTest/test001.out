@@ -2,8 +2,8 @@
  Input=test001.gjf
  Output=test001.log
  Initial command:
- /Users/hhratchian/.gaussian/gdv-current/gdv/l1.exe "/Users/hhratchian/.scratch/Gau-864.inp" -scrdir="/Users/hhratchian/.scratch/"
- Entering Link 1 = /Users/hhratchian/.gaussian/gdv-current/gdv/l1.exe PID=       865.
+ /Users/hhratchian/.gaussian/gdv-current/gdv/l1.exe "/Users/hhratchian/.scratch/Gau-7080.inp" -scrdir="/Users/hhratchian/.scratch/"
+ Entering Link 1 = /Users/hhratchian/.gaussian/gdv-current/gdv/l1.exe PID=      7081.
   
  Copyright (c) 1988,1990,1992,1993,1995,1998,2003,2009,2016,
             Gaussian, Inc.  All Rights Reserved.
@@ -78,8 +78,9 @@
  
  ******************************************
  Gaussian DV:  EM64M-GDVRevI.09  1-Aug-2016
-                 2-Jun-2019 
+                 4-Jun-2019 
  ******************************************
+ %chk=test001
  ---------------------------------------
  #p test uhf sto-3g guess=mix output=mat
  ---------------------------------------
@@ -90,7 +91,7 @@
  5/5=2,38=5/2;
  6/7=2,8=2,9=2,10=2,28=1/1;
  99/5=1,6=100000,9=1/99;
- Leave Link    1 at Sun Jun  2 15:39:45 2019, MaxMem=           0 cpu:               0.0 elap:               0.0
+ Leave Link    1 at Tue Jun  4 11:37:01 2019, MaxMem=           0 cpu:               0.0 elap:               0.2
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l101.exe)
  ------------------------------------------------------------------
  Test001 - H2 at long distance with broken-symmetry result (1.5 A).
@@ -116,7 +117,7 @@
  NQMom=    0.0000000   0.0000000
  NMagM=    2.7928460   2.7928460
  AtZNuc=   1.0000000   1.0000000
- Leave Link  101 at Sun Jun  2 15:39:45 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
+ Leave Link  101 at Tue Jun  4 11:37:01 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l202.exe)
                           Input orientation:                          
  ---------------------------------------------------------------------
@@ -141,7 +142,7 @@
       2          1           0        0.000000    0.000000   -0.750000
  ---------------------------------------------------------------------
  Rotational constants (GHZ):           0.0000000         445.7378706         445.7378706
- Leave Link  202 at Sun Jun  2 15:39:45 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.0
+ Leave Link  202 at Tue Jun  4 11:37:01 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.0
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l301.exe)
  Standard basis: STO-3G (5D, 7F)
  Ernie: Thresh=  0.10000D-02 Tol=  0.10000D-05 Strict=F.
@@ -171,7 +172,7 @@
  Integral buffers will be    131072 words long.
  Raffenetti 2 integral format.
  Two-electron integral symmetry is turned on.
- Leave Link  301 at Sun Jun  2 15:39:45 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.1
+ Leave Link  301 at Tue Jun  4 11:37:01 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.1
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l302.exe)
  NPDir=0 NMtPBC=     1 NCelOv=     1 NCel=       1 NClECP=     1 NCelD=      1
          NCelK=      1 NCelE2=     1 NClLst=     1 CellRange=     0.0.
@@ -179,12 +180,12 @@
  One-electron integral symmetry used in STVInt
  NBasis=     2 RedAO= T EigKep=  7.43D-01  NBF=     1     0     0     0     0     1     0     0
  NBsUse=     2 1.00D-06 EigRej= -1.00D+00 NBFU=     1     0     0     0     0     1     0     0
- Leave Link  302 at Sun Jun  2 15:39:46 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
+ Leave Link  302 at Tue Jun  4 11:37:02 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l303.exe)
  DipDrv:  MaxL=1.
- Leave Link  303 at Sun Jun  2 15:39:46 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.1
+ Leave Link  303 at Tue Jun  4 11:37:02 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.0
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l308.exe)
- Leave Link  308 at Sun Jun  2 15:39:46 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.0
+ Leave Link  308 at Tue Jun  4 11:37:02 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.0
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l401.exe)
  ExpMin= 1.69D-01 ExpMax= 3.43D+00 ExpMxC= 3.43D+00 IAcc=3 IRadAn=         5 AccDes= 0.00D+00
  Harris functional with IExCor=  205 and IRadAn=       5 diagonalized for initial guess.
@@ -207,7 +208,7 @@
        Occupied  (?A)
        Virtual   (?A)
  Initial guess <Sx>= 0.0000 <Sy>= 0.0000 <Sz>= 0.0000 <S**2>= 1.0000 S= 0.6180
- Leave Link  401 at Sun Jun  2 15:39:46 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
+ Leave Link  401 at Tue Jun  4 11:37:02 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l502.exe)
  Keep R1 and R2 ints in memory in symmetry-blocked form, NReq=801177.
  FoFCou: FMM=F IPFlag=           0 FMFlag=           0 FMFlg1=           0
@@ -346,7 +347,7 @@
  KE= 1.402646662244D+00 PE=-3.110302818740D+00 EE= 3.971645543130D-01
  Annihilation of the first spin contaminant:
  S**2 before annihilation     0.6949,   after     0.0000
- Leave Link  502 at Sun Jun  2 15:39:46 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.1
+ Leave Link  502 at Tue Jun  4 11:37:02 2019, MaxMem=   100000000 cpu:               0.0 elap:               0.1
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l601.exe)
  Copying SCF densities to generalized density rwf, IOpCl= 1 IROHF=0.
  SCF density gives NOpUse=  1 NOpAll=  8.
@@ -457,20 +458,19 @@
  ---------------------------------------------------------------------------------
 
  No NMR shielding tensors so no spin-rotation constants.
- Leave Link  601 at Sun Jun  2 15:39:46 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
+ Leave Link  601 at Tue Jun  4 11:37:02 2019, MaxMem=   100000000 cpu:               0.1 elap:               0.1
  (Enter /Users/hhratchian/.gaussian/gdv-current/gdv/l9999.exe)
 
  Test job not archived.
- 1\1\GINC-HRANTS-MBP\SP\UHF\STO-3G\H2\HHRATCHIAN\02-Jun-2019\0\\#p test
-  uhf sto-3g guess=mix output=mat\\Test001 - H2 at long distance with b
- roken-symmetry result (1.5 A).\\0,1\H\H,1,1.5\\Version=EM64M-GDVRevI.0
- 9\HF=-0.9577068\S2=0.694894\S2-1=0.\S2A=0.\RMSD=8.950e-10\Dipole=0.,0.
- ,0.\Quadrupole=-0.0879822,-0.0879822,0.1759644,0.,0.,0.\PG=D*H [C*(H1.
- H1)]\\@
+ 1\1\GINC-HRANTS-MACBOOK-PRO\SP\UHF\STO-3G\H2\HHRATCHIAN\04-Jun-2019\0\
+ \#p test uhf sto-3g guess=mix output=mat\\Test001 - H2 at long distanc
+ e with broken-symmetry result (1.5 A).\\0,1\H\H,1,1.5\\Version=EM64M-G
+ DVRevI.09\HF=-0.9577068\S2=0.694894\S2-1=0.\S2A=0.\RMSD=8.950e-10\Dipo
+ le=0.,0.,0.\Quadrupole=-0.0879822,-0.0879822,0.1759644,0.,0.,0.\PG=D*H
+  [C*(H1.H1)]\\@
 
 
- IF YOU GIVE A BOY AND A PIG EVERYTHING THEY WANT,
- YOU'LL GET A BAD BOY AND A GOOD PIG.
+ I WANT IT ALL - RICH, THIN, AND CHOCOLATE.
 
  Writing WrtUnf unformatted file "test001.mat"
  Gaussian matrix elements                                         Version   2 NLab=11 Len12L=8 Len4L=8
@@ -546,7 +546,7 @@
  Write BETA FOCK MATRIX                    from file 10538 offset           0 length                   3 to matrix element file.
  WrtI4R:  DoWrit=T IU=  31 LenA=        4000
  No 2e integrals to process.
- Job cpu time:       0 days  0 hours  0 minutes  0.8 seconds.
- Elapsed time:       0 days  0 hours  0 minutes  0.8 seconds.
+ Job cpu time:       0 days  0 hours  0 minutes  0.7 seconds.
+ Elapsed time:       0 days  0 hours  0 minutes  0.9 seconds.
  File lengths (MBytes):  RWF=      6 Int=      0 D2E=      0 Chk=      1 Scr=      1
- Normal termination of Gaussian DV at Sun Jun  2 15:39:46 2019.
+ Normal termination of Gaussian DV at Tue Jun  4 11:37:02 2019.

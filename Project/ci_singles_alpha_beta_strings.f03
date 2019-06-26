@@ -93,6 +93,12 @@
       CAlpha = CAlpha_mqc
       CBeta= CBeta_mqc
 !
+!     Print the alpha-alpha, beta-beta, and alpha-beta MO overlap matrix.
+!
+      call mqc_print_matrix(6,MatMul(MatMul(Transpose(CAlpha),SMatrixAO),CAlpha),Header='Alpha-Alpha MO Overlap Matrix')
+      call mqc_print_matrix(6,MatMul(MatMul(Transpose(CBeta),SMatrixAO),CBeta),Header='Beta-Beta   MO Overlap Matrix')
+      call mqc_print_matrix(6,MatMul(MatMul(Transpose(CAlpha),SMatrixAO),CBeta),Header='Alpha-Beta  MO Overlap Matrix')
+!
 !     Below is a conditional that requires the number of basis functions to be
 !     greater than the number of alpha or beta electrons
 !
